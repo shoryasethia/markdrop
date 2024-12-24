@@ -1,111 +1,115 @@
-# Markdrop
+# Markdrop  
 
-A Python package for converting PDFs to markdown while extracting images and tables. Markdrop makes it easy to convert PDF documents into markdown format while preserving images and tables.
+A Python package for converting PDFs (or PDF URLs) to markdown while extracting images and tables. Markdrop makes it easy to convert PDF documents into markdown format while preserving images and tables.  
 
 ## Features  
 
-- [x] PDF to Markdown conversion with formatting preservation using Docling
-- [x] Automatic image extraction with quality preservation using XRef Id
-- [x] Table detection using Microsoft's Table Transformer    
-- [x] PDF URL support for above three functionalities
-- [ ] Textual descriptive descriptions for extracted images and tables  
-- [ ] Optical Character Recognition (OCR) for images with embedded text
-- [ ] Enhanced support for structured output formats (e.g., JSON, YAML)    
-- [ ] Support for multi-language PDFs  
+- PDF to Markdown conversion with formatting preservation using Docling
+- Automatic image extraction with quality preservation using XRef Id
+- Table detection using Microsoft's Table Transformer
 
-## Installation
+## Installation  
 
-```bash
-pip install markdrop
-```
+```bash  
+pip install markdrop  
+```  
+> https://pypi.org/project/markdrop  
 
-## Quick Start
+## Quick Start  
 
 ```python
 from markdrop import extract_images, make_markdown, extract_tables_from_pdf
 
-source_pdf = 'path_or_link_to_pdf'  # Replace with your local PDF file path or a URL
-output_dir = 'data/output'          # Replace it with desired output directory's path
-
 # Convert PDF to markdown
-make_markdown(source_pdf, output_dir)
+make_markdown("input.pdf", "output_dir")
 
 # Extract images
-extract_images(source_pdf, output_dir)
+extract_images("input.pdf", "output_dir")
 
 # Extract tables
-extract_tables_from_pdf(source_pdf, output_dir=output_dir)
+extract_tables_from_pdf("input.pdf", output_dir="output_dir")
 ```
 
-## API Reference
+## API Reference  
 
-### make_markdown(source, output_dir, verbose=False)
-Converts a PDF to markdown format.
+### make_markdown(source, output_dir, verbose=False)  
+Converts a PDF or its URL to markdown format.  
 
-Parameters:
-- `source` (str): Path to input PDF
-- `output_dir` (str): Output directory path
-- `verbose` (bool): Enable detailed logging
+Parameters:  
+- `source` (str): Path to input PDF or URL  
+- `output_dir` (str): Output directory path  
+- `verbose` (bool): Enable detailed logging  
 
-### extract_images(source, output_dir, verbose=False)
-Extracts images from PDF while maintaining quality.
+### extract_images(source, output_dir, verbose=False)  
+Extracts images from PDF or its URL while maintaining quality.  
 
-Parameters:
-- `source` (str): Path to input PDF
-- `output_dir` (str): Output directory path
-- `verbose` (bool): Enable detailed logging
+Parameters:  
+- `source` (str): Path to input PDF or URL  
+- `output_dir` (str): Output directory path  
+- `verbose` (bool): Enable detailed logging  
 
-### extract_tables_from_pdf(pdf_path, **kwargs)
-Detects and extracts tables using AI.
+### extract_tables_from_pdf(pdf_path, **kwargs)  
+Detects and extracts tables using AI.  
 
-Parameters:
-- `pdf_path` (str): Path to input PDF
-- `start_page` (int, optional): Starting page number
-- `end_page` (int, optional): Ending page number
-- `threshold` (float, optional): Detection confidence threshold
-- `output_dir` (str): Output directory path
+Parameters:  
+- `pdf_path` (str): Path to input PDF or URL  
+- `start_page` (int, optional): Starting page number  
+- `end_page` (int, optional): Ending page number  
+- `threshold` (float, optional): Detection confidence threshold  
+- `output_dir` (str): Output directory path  
 
-## Contributing
+## Contributing  
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.  
 
-### Development Setup
+### Development Setup  
 
-1. Clone the repository:
-```bash
-git clone https://github.com/shoryasethia/markdrop.git
-cd markdrop
-```
+1. Clone the repository:  
+```bash  
+git clone https://github.com/shoryasethia/markdrop.git  
+cd markdrop  
+```  
 
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+2. Create a virtual environment:  
+```bash  
+python -m venv venv  
+source venv/bin/activate  # On Windows: venv\Scripts\activate  
+```  
 
-3. Install development dependencies:
-```bash
-pip install -r requirements-dev.txt
-```
+3. Install development dependencies:  
+```bash  
+pip install -r requirements.txt  
+```  
 
-### Running Tests
-```bash
-pytest tests/
-```
+## Project Structure  
 
-## License
+```bash  
+markdrop/  
+├── LICENSE  
+├── README.md  
+├── CONTRIBUTING.md  
+├── CHANGELOG.md  
+├── requirements.txt  
+├── setup.py  
+└── markdrop/  
+    ├── __init__.py  
+    ├── main.py  
+    ├── utils.py  
+    └── ignore_warnings.py  
+```  
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## License  
 
-## Changelog
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.  
 
-See [CHANGELOG.md](CHANGELOG.md) for version history.
+## Changelog  
 
-## Code of Conduct
+See [CHANGELOG.md](CHANGELOG.md) for version history.  
 
-Please note that this project follows our [Code of Conduct](CODE_OF_CONDUCT.md).
+## Code of Conduct  
 
-## Support
+Please note that this project follows our [Code of Conduct](CODE_OF_CONDUCT.md).  
 
-- [Open an issue](https://github.com/shoryasethia/markdrop/issues)
-- [Documentation](https://markdrop.readthedocs.io/)
+## Support  
+
+- [Open an issue](https://github.com/shoryasethia/markdrop/issues)  
