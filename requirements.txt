@@ -1,0 +1,7 @@
+docling
+fitz
+Pillow
+pymupdf
+torch
+tqdm
+transformers
