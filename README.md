@@ -13,7 +13,7 @@ A Python package for converting PDFs to markdown while extracting images and tab
 ```bash
 pip install markdrop
 ```
-
+> https://pypi.org/project/markdrop
 ## Quick Start
 
 ```python
@@ -100,4 +100,3 @@ Please note that this project follows our [Code of Conduct](CODE_OF_CONDUCT.md).
 ## Support
 
 - [Open an issue](https://github.com/shoryasethia/markdrop/issues)
-- [Documentation](https://markdrop.readthedocs.io/)
