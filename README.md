@@ -57,7 +57,7 @@ Parameters:
 - `verbose` (bool): Enable detailed logging  
 
 ### extract_tables_from_pdf(pdf_path, **kwargs)  
-Detects and extracts tables using AI.  
+Detects and extracts tables images.  
 
 Parameters:  
 - `pdf_path` (str): Path to input PDF or URL  
