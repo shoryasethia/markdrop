@@ -6,8 +6,8 @@ from utils import extract_images, make_markdown, extract_tables_from_pdf
 from tqdm import tqdm
 
 
-source_pdf = 'data/input/EP-IITB.pdf'
-output_dir = 'data/output'
+source_pdf = 'path_or_link_to_pdf'  # Replace with your local PDF file path or a URL
+output_dir = 'data/output'          # Replace it with desired output directory's path
 
 print("Converting PDF to markdown...")
 with tqdm(total=1, desc="Markdown Conversion", unit="step") as pbar:

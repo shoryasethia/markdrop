@@ -2,11 +2,16 @@
 
 A Python package for converting PDFs to markdown while extracting images and tables. Markdrop makes it easy to convert PDF documents into markdown format while preserving images and tables.
 
-## Features
+## Features  
 
-- PDF to Markdown conversion with formatting preservation using Docling
-- Automatic image extraction with quality preservation using XRef Id
-- Table detection using Microsoft's Table Transformer
+- [x] PDF to Markdown conversion with formatting preservation using Docling
+- [x] Automatic image extraction with quality preservation using XRef Id
+- [x] Table detection using Microsoft's Table Transformer    
+- [x] PDF URL support for above three functionalities
+- [ ] Textual descriptive descriptions for extracted images and tables  
+- [ ] Optical Character Recognition (OCR) for images with embedded text
+- [ ] Enhanced support for structured output formats (e.g., JSON, YAML)    
+- [ ] Support for multi-language PDFs  
 
 ## Installation
 
@@ -19,14 +24,17 @@ pip install markdrop
 ```python
 from markdrop import extract_images, make_markdown, extract_tables_from_pdf
 
+source_pdf = 'path_or_link_to_pdf'  # Replace with your local PDF file path or a URL
+output_dir = 'data/output'          # Replace it with desired output directory's path
+
 # Convert PDF to markdown
-make_markdown("input.pdf", "output_dir")
+make_markdown(source_pdf, output_dir)
 
 # Extract images
-extract_images("input.pdf", "output_dir")
+extract_images(source_pdf, output_dir)
 
 # Extract tables
-extract_tables_from_pdf("input.pdf", output_dir="output_dir")
+extract_tables_from_pdf(source_pdf, output_dir=output_dir)
 ```
 
 ## API Reference

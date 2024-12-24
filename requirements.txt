@@ -6,3 +6,4 @@ torch
 tqdm
 transformers
 timm
+requests
