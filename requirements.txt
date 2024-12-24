@@ -5,3 +5,4 @@ pymupdf
 torch
 tqdm
 transformers
+timm
