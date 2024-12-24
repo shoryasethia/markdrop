@@ -79,7 +79,21 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
-
+## Project Structure
+```bash
+markdrop/
+├── LICENSE
+├── README.md
+├── CONTRIBUTING.md
+├── CHANGELOG.md
+├── requirements.txt
+├── setup.py
+└── markdrop/
+    ├── __init__.py
+    ├── main.py
+    ├── utils.py
+    └── ignore_warnings.py
+```
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
