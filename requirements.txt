@@ -1,9 +1,16 @@
 docling
 fitz
 Pillow
+protobuf
 pymupdf
 torch
 tqdm
 transformers
 timm
 requests
+python-dotenv
+qwen_vl_utils
+google.generativeai
+vllm
+openai
+setuptools

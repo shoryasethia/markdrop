@@ -18,3 +18,10 @@ All notable changes to this project will be documented in this file.
 ## [0.1.2] - 25-12-2024
 ### Added
 - PDF URL support for pdf to md, images and table extraction.
+  
+## [0.2.0] - 26-12-2024 - Major Update
+### Added
+-  Fix downloading pdfs from urls (in `make_markdown`).
+-  Added facility to analyze different types of image references (`XRef Id`)in a PDF from local file or URL
+-  Now, package supports genration of textual descriptions of image(s).
+-  ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral'] LLM Clients are supported for this conversion

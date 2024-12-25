@@ -1,7 +1,11 @@
+from ignore_warnings import *
 import os
 import sys
 import fitz
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry #type: ignore
+
 import tempfile
 from urllib.parse import urlparse
 from docling.document_converter import DocumentConverter
@@ -10,30 +14,29 @@ from transformers import TableTransformerForObjectDetection, DetrImageProcessor
 from PIL import Image
 import torch
 
+def create_robust_session():
+    session = requests.Session()
+    retries = Retry(
+        total=5,
+        backoff_factor=0.5,
+        status_forcelist=[500, 502, 503, 504, 104]
+    )
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    return session
+
 def download_pdf(url, output_dir=None):
-    """
-    Download a PDF file from any URL and save it locally.
-    
-    Args:
-    - url (str): URL of the PDF file
-    - output_dir (str, optional): Directory to save the downloaded PDF
-    
-    Returns:
-    - str: Path to the downloaded PDF file
-    """
     try:
         print(f"Attempting to download PDF from: {url}")
         
-        # Set up headers to mimic a browser for better compatibility
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
 
-        # Follow redirects to get the final URL
-        response = requests.get(url, headers=headers, stream=True, allow_redirects=True)
+        session = create_robust_session()
+        response = session.get(url, headers=headers, stream=True, allow_redirects=True)
         response.raise_for_status()
         
-        # If output_dir is provided, save there; otherwise use a temp file
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
             filename = os.path.basename(urlparse(response.url).path) or 'downloaded.pdf'
@@ -45,7 +48,6 @@ def download_pdf(url, output_dir=None):
             filepath = temp.name
             temp.close()
 
-        # Download and save the file
         total_size = int(response.headers.get('content-length', 0))
         block_size = 8192
         downloaded_size = 0
@@ -56,16 +58,14 @@ def download_pdf(url, output_dir=None):
                 if chunk:
                     f.write(chunk)
                     downloaded_size += len(chunk)
-                    if total_size > 0:  # Only show progress if we know the total size
+                    if total_size > 0:
                         progress = (downloaded_size / total_size) * 100
                         print(f"Download progress: {progress:.1f}%", end='\r')
 
         print("\nDownload complete. Verifying PDF...")
 
-        # Verify the downloaded file is a valid PDF
         try:
             with fitz.open(filepath) as doc:
-                # Try to access the first page to verify PDF is valid
                 _ = doc[0]
                 page_count = len(doc)
                 print(f"Valid PDF verified: {page_count} pages")
@@ -75,9 +75,24 @@ def download_pdf(url, output_dir=None):
 
         return filepath
 
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"Error downloading PDF: {str(e)}")
     except Exception as e:
+        if isinstance(e, requests.exceptions.RequestException):
+            print(f"Retrying download due to error: {str(e)}")
+            # Second attempt with different headers
+            try:
+                headers = {
+                    'User-Agent': 'curl/7.64.1',
+                    'Accept': 'application/pdf'
+                }
+                session = create_robust_session()
+                response = session.get(url, headers=headers, stream=True)
+                with open(filepath, 'wb') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+                return filepath
+            except Exception as retry_error:
+                raise Exception(f"Error downloading PDF after retry: {str(retry_error)}")
         raise Exception(f"Error processing PDF download: {str(e)}")
 
 def cleanup_download_dir(download_dir, verbose=False):
@@ -139,95 +154,109 @@ def recoverpix(doc, item):
 
 def extract_images(source, output_dir, verbose=False):
     """
-    Extract images based on xref ID from the PDF and save them to the specified directory.
+    Extract all images from PDF using xref IDs, handling multiple instances and formats.
     """
     download_dir = None
     try:
         if source.startswith(('http://', 'https://')):
             download_dir = os.path.join(output_dir, "downloaded_pdfs")
             pdf_path = download_pdf(source, download_dir)
-            if verbose:
-                print(f"Successfully downloaded PDF to: {pdf_path}")
         else:
             pdf_path = source
-            if verbose:
-                print(f"Using local PDF file: {pdf_path}")
 
         images_dir = os.path.join(output_dir, "images")
-        if not os.path.isdir(images_dir):
-            os.makedirs(images_dir)
+        os.makedirs(images_dir, exist_ok=True)
 
         with fitz.open(pdf_path) as pdf_reader:
             images = []
-            xreflist = []
+            xref_dict = {}  # Track unique images by their content hash
+            
             for page_number in range(pdf_reader.page_count):
-                img_list = pdf_reader.get_page_images(page_number)
+                page = pdf_reader[page_number]
+                
+                # Get both referenced images and images from form XObjects
+                img_list = page.get_images()
+                
                 for img in img_list:
                     xref = img[0]
-                    if xref in xreflist:
+                    
+                    try:
+                        image_data = recoverpix(pdf_reader, img)
+                        if not image_data:
+                            continue
+                            
+                        imgdata = image_data["image"]
+                        content_hash = hash(imgdata)
+                        
+                        # Only save if we haven't seen this exact image before
+                        if content_hash not in xref_dict:
+                            xref_dict[content_hash] = xref
+                            imgfile = os.path.join(images_dir, f"img_{xref}.{image_data['ext']}")
+                            
+                            with open(imgfile, "wb") as fout:
+                                fout.write(imgdata)
+                            
+                            images.append(imgfile)
+                            
+                            if verbose:
+                                print(f"Extracted image {len(images)} (xref: {xref}) from page {page_number + 1}")
+                    
+                    except Exception as e:
+                        if verbose:
+                            print(f"Failed to extract image with xref {xref}: {str(e)}")
                         continue
-                    xreflist.append(xref)
 
-                    image_data = recoverpix(pdf_reader, img)
-                    imgdata = image_data["image"]
-                    imgfile = os.path.join(images_dir, f"img_{xref}.{image_data['ext']}")
-
-                    with open(imgfile, "wb") as fout:
-                        fout.write(imgdata)
-
-                    images.append(imgfile)
-            
             if verbose:
-                print(f"All images saved in {images_dir}.")
+                print(f"Successfully extracted {len(images)} unique images to {images_dir}")
 
             return images
 
     except Exception as e:
         print(f"An error occurred while extracting images: {e}")
-        sys.exit(1)
+        raise
     finally:
         if download_dir:
             cleanup_download_dir(download_dir, verbose)
 
-
 def make_markdown(source, output_dir, verbose=False):
     """
-    Converts a PDF to markdown (.txt) format and saves it in the specified output directory.
+    Converts a PDF to markdown with proper encoding handling
     """
     download_dir = None
     try:
         if source.startswith(('http://', 'https://')):
             download_dir = os.path.join(output_dir, "downloaded_pdfs")
             pdf_path = download_pdf(source, download_dir)
-            if verbose:
-                print(f"Successfully downloaded PDF to: {pdf_path}")
         else:
             pdf_path = source
-            if verbose:
-                print(f"Using local PDF file: {pdf_path}")
 
         output_dir = os.path.join(output_dir, "markdown")
-        if not os.path.isdir(output_dir):
-            os.makedirs(output_dir)
+        os.makedirs(output_dir, exist_ok=True)
 
         converter = DocumentConverter()
         result = converter.convert(pdf_path)
         result_str = result.document.export_to_markdown()
 
         output_txt_path = os.path.join(output_dir, os.path.basename(pdf_path).replace('.pdf', '.txt'))
-        with open(output_txt_path, 'w') as f:
+        
+        # Handle encoding properly
+        with open(output_txt_path, 'w', encoding='utf-8', errors='replace') as f:
             f.write(result_str)
         
         if verbose:
             print(f"Markdown file saved as {output_txt_path}")
 
+    except UnicodeEncodeError as e:
+        print(f"Handling Unicode error: {str(e)}")
+        # Fallback encoding handling
+        with open(output_txt_path, 'w', encoding='ascii', errors='ignore') as f:
+            f.write(result_str)
     except Exception as e:
         print(f"An error occurred while converting PDF to markdown: {e}")
         sys.exit(1)
     finally:
         if download_dir:
             cleanup_download_dir(download_dir, verbose)
-
 
 def load_tatr():
     # Load the model and processor

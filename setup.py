@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="markdrop",
-    version="0.1.2",
+    version="0.2.0",
     packages=find_packages(),
     install_requires=[
         "pymupdf",
@@ -10,11 +10,22 @@ setup(
         "transformers",
         "torch",
         "Pillow",
-        "tqdm"
+        "tqdm",
+        "fitz",
+        "python-dotenv",
+        "requests",
+        "qwen_vl_utils",
+        "google.generativeai",
+        "vllm",
+        "openai",
+        "setuptools",
+        "timm",
+        "protobuf"
+        
     ],
     author="Shorya Sethia",
     author_email="shoryasethia4may@gmail.com",
-    description="A tool to convert PDFs to markdown with image and table extraction",
+    description="A tool to convert PDFs or URL-PDFs to markdown with image and table extraction, and generate image descriptions.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/shoryasethia/markdrop",
@@ -23,5 +34,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.10",
 )

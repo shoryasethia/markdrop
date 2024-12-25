@@ -8,7 +8,7 @@ A Python package for converting PDFs (or PDF URLs) to markdown while extracting 
 - [x] Automatic image extraction with quality preservation using XRef Id
 - [x] Table detection using Microsoft's Table Transformer    
 - [x] PDF URL support for above three functionalities
-- [ ] Textual descriptive descriptions for extracted images and tables  
+- [x] Textual descriptive descriptions for any image file or folder  
 - [ ] Optical Character Recognition (OCR) for images with embedded text
 - [ ] Enhanced support for structured output formats (e.g., JSON, YAML)    
 - [ ] Support for multi-language PDFs  
@@ -18,6 +18,7 @@ A Python package for converting PDFs (or PDF URLs) to markdown while extracting 
 ```bash  
 pip install markdrop  
 ```  
+
 > https://pypi.org/project/markdrop  
 
 ## Quick Start  
@@ -25,17 +26,35 @@ pip install markdrop
 ```python
 from markdrop import extract_images, make_markdown, extract_tables_from_pdf
 
-source_pdf = 'path_or_link_to_pdf'  # Replace with your local PDF file path or a URL
-output_dir = 'data/output'          # Replace with your local output directory path
+source_pdf = 'url/or/path/to/pdf/file'    # Replace with your local PDF file path or a URL
+output_dir = 'data/output'                # Replace it with desired output directory's path
 
-# Convert PDF (or URL) to markdown
 make_markdown(source_pdf, output_dir)
-
-# Extract images from PDF (or URL)
-extract_images(source_pdf, output_dir)
-
-# Extract tables from PDF (or URL)
+extract_images(source_pdf, output_dir, verbose=True)
 extract_tables_from_pdf(source_pdf, output_dir=output_dir)
+
+```
+
+```python
+from markdrop import setup_keys
+
+### API Key Setup
+### If using 'openai' or 'gemini' as llm_client in the generate_descriptions function, you need to set up the API keys first.
+
+setup_keys()
+```
+
+```python
+from markdrop import generate_descriptions
+
+### Image Descriptions Generation
+
+prompt = "Give textual highly detailed descriptions from this image ONLY, nothing else." # Replace it with your desired prompt
+input_path = 'path/to/img_file/or/dir'    # Replace it with the path to the images dir or image file
+output_dir = 'data/output'                # Replace it with the desired output directory's path
+llm_clients = ['gemini','llama-vision']        # Replace it with the desired models from ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral'] only
+
+generate_descriptions(input_path = input_path, output_dir = output_dir, prompt = prompt, llm_client = llm_clients)
 ```
 
 ## API Reference  
@@ -65,6 +84,26 @@ Parameters:
 - `end_page` (int, optional): Ending page number  
 - `threshold` (float, optional): Detection confidence threshold  
 - `output_dir` (str): Output directory path  
+
+### generate_descriptions(input_path, output_dir, prompt, llm_client)
+Generates the description of image(s) based on given prompt and llm_client in a csv
+> `llm clients` supporated are ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
+
+Parameters:
+- `input_path` (str): Path to input PDF or URL  
+- `output_dir` (str): Output directory path  
+- `prompt` (str): prompt to be sent to model along with image
+- `llm_client` (list): list containing minimum one model from llm clients
+
+
+### analyze_pdf_images(source, output_dir, verbose=False):
+Analyze different types of image references in a PDF from local file or URL
+    
+Parameters:  
+- `source` (str): Local PDF path or URL to PDF
+- `output_dir` (str): Directory for temporary files
+- `verbose` (bool): Print detailed information
+
 
 ## Contributing  
 
@@ -99,10 +138,18 @@ markdrop/
 ├── CHANGELOG.md  
 ├── requirements.txt  
 ├── setup.py  
-└── markdrop/  
+└── markdrop/ 
+    ├── models/
+    |   ├── .env
+    |   ├── img_descriptions.py
+    |   ├── logger.py
+    |   ├── model_loader.py
+    |   ├── responder.py
+    |   └── setup_keys.py
     ├── __init__.py  
     ├── main.py  
     ├── utils.py  
+    ├── helper.py
     └── ignore_warnings.py  
 ```  
 
