@@ -87,7 +87,7 @@ Parameters:
 
 ### generate_descriptions(input_path, output_dir, prompt, llm_client)
 Generates the description of image(s) based on given prompt and llm_client in a csv
-> `llm clients` supporated are ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
+> `llm clients` supported are ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
 
 Parameters:
 - `input_path` (str): Path to input PDF or URL  
