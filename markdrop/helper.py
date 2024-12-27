@@ -132,7 +132,7 @@ def analyze_pdf_images_main(source: str, output_dir: str, verbose: bool = False,
 def analyze_pdf_images(source: str, output_dir: str, verbose: bool = True, save_images: bool = True):
     
     try:
-        result = analyze_pdf_images(
+        result = analyze_pdf_images_main(
             source=source,
             output_dir=output_dir,
         )
