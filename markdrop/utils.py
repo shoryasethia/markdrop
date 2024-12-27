@@ -1,4 +1,4 @@
-from ignore_warnings import *
+from .ignore_warnings import *
 import os
 import sys
 import fitz
