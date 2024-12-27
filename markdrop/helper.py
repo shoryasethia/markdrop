@@ -1,9 +1,9 @@
 import fitz
 import os
-from utils import download_pdf, cleanup_download_dir
+from .utils import download_pdf, cleanup_download_dir
 
-pdf_path = 'url/or/path/to/pdf/file'
-output_dir = 'data/output'
+# pdf_path = 'url/or/path/to/pdf/file'
+# output_dir = 'data/output'
 
 def analyze_pdf_images(source, output_dir, verbose=False):
     """
@@ -44,5 +44,5 @@ def analyze_pdf_images(source, output_dir, verbose=False):
         if download_dir:
             cleanup_download_dir(download_dir, verbose)
 
-embedded_count, ref_count = analyze_pdf_images(pdf_path, output_dir)
-print(f"Embedded: {embedded_count}, References: {ref_count}")           
+# embedded_count, ref_count = analyze_pdf_images(pdf_path, output_dir)
+# print(f"Embedded: {embedded_count}, References: {ref_count}")           

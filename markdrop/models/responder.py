@@ -1,8 +1,8 @@
-from model_loader import load_model
+from .model_loader import load_model
 from transformers import GenerationConfig
 import google.generativeai as genai
 from dotenv import load_dotenv
-from logger import get_logger
+from .logger import get_logger
 from openai import OpenAI
 from PIL import Image
 import torch

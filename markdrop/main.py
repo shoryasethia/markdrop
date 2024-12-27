@@ -1,5 +1,5 @@
 # To ignore warnings
-from ignore_warnings import *
+from .ignore_warnings import *
 
 from utils import extract_images, make_markdown, extract_tables_from_pdf
 from models.img_descriptions import generate_descriptions

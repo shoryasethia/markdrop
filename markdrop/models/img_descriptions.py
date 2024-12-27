@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 from pathlib import Path
-from model_loader import load_model
-from responder import generate_response
+from .model_loader import load_model
+from .responder import generate_response
 from PIL import Image
 
 def validate_image(image_path):
