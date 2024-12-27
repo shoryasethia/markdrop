@@ -60,7 +60,7 @@ generate_descriptions(input_path = input_path, output_dir = output_dir, prompt =
 from markdrop import analyze_pdf_images
 
 pdf_path = 'path/to/pdf/file'             # Replace with your local PDF file pathL
-output_dir = "output/data/image_xref"     # Replace it with desired output directory's path
+output_dir = "data/output/image_xref"     # Replace it with desired output directory's path
 
 analyze_pdf_images(pdf_path, output_dir, verbose=True, save_images=True)
 ```
