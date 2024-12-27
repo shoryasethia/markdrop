@@ -58,8 +58,7 @@ def load_model(model_choice):
         
         api_key = os.getenv('OPENAI_API_KEY')
         if not api_key:
-            from setup_keys import setup_keys
-            setup_keys(kye = 'oepnai')
+            setup_keys(key = 'openai')
         
         return api_key, None
     

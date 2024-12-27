@@ -4,6 +4,6 @@ from .models.setup_keys import setup_keys
 from .helper import analyze_pdf_images
 from .ignore_warnings import *
 
-__version__ = "0.2.4"
+__version__ = "0.2.7"
 __all__ = ['extract_images', 'make_markdown', 'extract_tables_from_pdf', 
            'generate_descriptions', 'setup_keys', 'analyze_pdf_images']  

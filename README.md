@@ -30,7 +30,7 @@ source_pdf = 'url/or/path/to/pdf/file'    # Replace with your local PDF file pat
 output_dir = 'data/output'                # Replace it with desired output directory's path
 
 make_markdown(source_pdf, output_dir)
-extract_images(source_pdf, output_dir, verbose=True)
+extract_images(source_pdf, output_dir)
 extract_tables_from_pdf(source_pdf, output_dir=output_dir)
 
 ```

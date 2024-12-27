@@ -26,7 +26,7 @@ All notable changes to this project will be documented in this file.
 -  Now, package supports genration of textual descriptions of image(s).
 -  ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral'] LLM Clients are supported for this conversion
 
-## [0.2.3] and [0.2.4] - 27-12-2024
+## [0.2.3] to [0.2.7] - 27-12-2024
 ### Added
 -  Fix `img_path` in `responder.py`
 -  Optimised `setup_keys` function
