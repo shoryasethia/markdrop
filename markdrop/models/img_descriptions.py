@@ -13,17 +13,22 @@ def validate_image(image_path):
         return False
 
 def generate_descriptions(input_path, output_dir, prompt, llm_client=['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']):
-    # Create output directory
+    # Convert paths to Path objects for better handling
+    input_path = Path(input_path)
     output_dir = Path(output_dir)
+    
+    # Create output directory for descriptions
     desc_dir = output_dir / 'descriptions'
     desc_dir.mkdir(parents=True, exist_ok=True)
     
     # Get image paths
-    if os.path.isfile(input_path):
+    if input_path.is_file():
         image_paths = [input_path]
     else:
-        image_paths = [str(p) for p in Path(input_path).glob('*') 
-                      if p.suffix.lower() in ['.jpg', '.jpeg', '.png', '.bmp']]
+        image_paths = [
+            p for p in input_path.glob('*') 
+            if p.suffix.lower() in ['.jpg', '.jpeg', '.png', '.bmp']
+        ]
     
     results = []
     
@@ -34,9 +39,11 @@ def generate_descriptions(input_path, output_dir, prompt, llm_client=['qwen', 'g
             
         for model in llm_client:
             try:
-                response = generate_response([img_path], prompt, model_choice=model)
+                # Convert path to string for model processing
+                img_path_str = str(img_path)
+                response = generate_response([img_path_str], prompt, model_choice=model)
                 results.append({
-                    'image_path': img_path,
+                    'image_path': img_path_str,
                     'model': model,
                     'response': response
                 })
@@ -44,7 +51,7 @@ def generate_descriptions(input_path, output_dir, prompt, llm_client=['qwen', 'g
             except Exception as e:
                 print(f"Error processing {img_path} with {model}: {str(e)}")
                 results.append({
-                    'image_path': img_path,
+                    'image_path': str(img_path),
                     'model': model,
                     'response': f"ERROR: {str(e)}"
                 })

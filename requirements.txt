@@ -14,3 +14,4 @@ google.generativeai
 vllm
 openai
 setuptools
+typing

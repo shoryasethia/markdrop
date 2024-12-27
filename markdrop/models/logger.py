@@ -19,7 +19,7 @@ def get_logger(name):
         c_handler.setLevel(logging.INFO)
 
         # File handler
-        f_handler = logging.FileHandler('app.log')
+        f_handler = logging.FileHandler('runtime.log')
         f_handler.setLevel(logging.DEBUG)
 
         # Create formatters and add them to handlers

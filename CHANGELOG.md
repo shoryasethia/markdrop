@@ -25,3 +25,9 @@ All notable changes to this project will be documented in this file.
 -  Added facility to analyze different types of image references (`XRef Id`)in a PDF from local file or URL
 -  Now, package supports genration of textual descriptions of image(s).
 -  ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral'] LLM Clients are supported for this conversion
+
+## [0.2.3] - 27-12-2024
+### Added
+-  Fix `img_path` in `responder.py`
+-  Optimised `setup_keys` function
+-  Enhance and modified `analyze_pdf_images` function
