@@ -42,6 +42,8 @@ from markdrop import setup_keys
 ### If using 'openai' or 'gemini' as llm_client in the generate_descriptions function, you need to set up the API keys first.
 
 setup_keys(key = 'google')
+
+# Though this function will be called in genrate_descriptions if no keys are found.
 ```
 
 ```python
