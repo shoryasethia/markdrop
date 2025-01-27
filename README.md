@@ -1,4 +1,5 @@
 # Markdrop  
+<a href="https://pepy.tech/projects/markdrop"><img src="https://static.pepy.tech/badge/markdrop" alt="PyPI Downloads"></a>
 
 A Python package for converting PDFs (or PDF URLs) to markdown while extracting images and tables. Markdrop makes it easy to convert PDF documents into markdown format while preserving images and tables.  
 
