@@ -15,7 +15,7 @@ import transformers #type: ignore
 # Import and execute warning suppressions
 from .ignore_warnings import *
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __all__ = [
     # Main processing functions
     'markdrop',
