@@ -1,7 +1,7 @@
 from .ignore_warnings import *
 import os
 import sys
-import fitz
+import pymupdf as fitz
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry #type: ignore
