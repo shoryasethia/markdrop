@@ -31,3 +31,10 @@ All notable changes to this project will be documented in this file.
 -  Fix `img_path` in `responder.py`
 -  Optimised `setup_keys` function
 -  Enhance and modified `analyze_pdf_images` function
+
+## [0.3.0] - 30-01-2025
+### Added
+-  End-to-End pdf to markdown
+-  End-to-End pdf to html
+-  Generate descriptions of images and tables on the fly in a single traversal
+-  Added `Download table(s) as Excel` functionality

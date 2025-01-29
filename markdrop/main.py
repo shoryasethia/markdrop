@@ -1,42 +1,69 @@
-# To ignore warnings
-from ignore_warnings import *
+from pathlib import Path
+from .api_setup import setup_keys
+from .process import markdrop, MarkDropConfig, add_downloadable_tables, logging
+from .parse import process_markdown, ProcessorConfig, AIProvider, logger
 
-from utils import extract_images, make_markdown, extract_tables_from_pdf
-from models.img_descriptions import generate_descriptions
-from models.setup_keys import setup_keys
-from helper import analyze_pdf_images
+# Use with default configuration
+input_doc_path = "path/to/input.pdf"
+output_dir = Path('output_directory')
 
-### PDF Conversion
+########### <Default configuration> ###########
+config = MarkDropConfig(
+    image_resolution_scale=2,
+    download_button_color='#444444',
+    log_level=logging.INFO
+)
+########### </Default configuration> ###########
 
-source_pdf = 'url/or/path/to/pdf/file'    # Replace with your local PDF file path or a URL
-output_dir = 'data/output'                # Replace it with desired output directory's path
-
-make_markdown(source_pdf, output_dir)
-extract_images(source_pdf, output_dir)
-extract_tables_from_pdf(source_pdf, output_dir=output_dir)
-
-
-### Analyze different types of image references in a PDF
-
-pdf_path = 'path/to/pdf/file'             # Replace with your local PDF file pathL
-output_dir = "output/data/image_xref"     # Replace it with desired output directory's path
-
-analyze_pdf_images(pdf_path, output_dir, verbose=True, save_images=True)
-
-### API Key Setup
-### If using 'openai' or 'gemini' as llm_client in the generate_descriptions function, you need to set up the API keys first.
-
-setup_keys(key = 'google')  # or setup_keys(key = 'openai'), if using models = ['openai'] in the generate_descriptions function
+# Get the markdrop output
+html_path = markdrop(input_doc_path, output_dir, config)
+downloadable_html = add_downloadable_tables(html_path, config)
 
 
+#-----------------------------------------------------------------------------#
 
+setup_keys(key = 'gemini')      # setup_keys(key = 'openai')
 
+# Construct the markdown path based on input_doc_path
+input_doc_stem = Path(input_doc_path).stem
+markdown_path = output_dir / f"{input_doc_stem}-markdropped.md"
 
-### Image Descriptions Generation
+########### <Default prompts> ###########
+DEFAULT_IMAGE_PROMPT = """
+Provide a detailed, contextually rich description of this image. Include visual details, 
+context, data, and any relevant information that would help someone understand what this image 
+conveys without seeing it. Make it descriptive enough to serve as a replacement for the image.
+"""
 
-prompt = "Give textual highly detailed descriptions from this image ONLY, nothing else." # Replace it with your desired prompt
-input_path = 'path/to/img_file/or/dir'    # Replace it with the path to the images dir or image file
-output_dir = 'data/output'                # Replace it with the desired output directory's path
-models = ['gemini']        # Replace it with the desired models from ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral'] only
+DEFAULT_TABLE_PROMPT = """
+Analyze this markdown table and provide a detailed description of its contents.
+Include key insights, patterns, and important details. Make the summary
+comprehensive enough to replace the original table.
 
-generate_descriptions(input_path = input_path, output_dir = output_dir, prompt = prompt, llm_client = models)
+Table:
+"""
+########### </Default prompts> ###########
+
+config = ProcessorConfig(
+    input_path=markdown_path,  # Using the automatically constructed markdown path
+    output_dir=output_dir,     # Reusing the same output directory
+    ai_provider=AIProvider.GEMINI,
+    remove_images=False,
+    remove_tables=False,
+    table_descriptions=True,
+    image_descriptions=True,
+    max_retries=3,
+    retry_delay=2,
+    gemini_model_name="gemini-1.5-flash",
+    gemini_text_model_name="gemini-pro",
+    image_prompt=DEFAULT_IMAGE_PROMPT,
+    table_prompt=DEFAULT_TABLE_PROMPT
+)
+
+try:
+    logger.info(f"Starting markdown processing script with input: {markdown_path}")
+    output_path = process_markdown(config)
+    logger.info("Script completed successfully")
+except Exception as e:
+    logger.error(f"Script failed with error: {str(e)}", exc_info=True)
+    exit(1)

@@ -1,14 +1,23 @@
+beautifulsoup4
+beautifulsoup4
 docling
-fitz
+docling_core == 2.16.0
+openai
+openpyxl
+pandas
 Pillow
 protobuf
+python-dotenv
+
+
+
+fitz
 pymupdf
 torch
 tqdm
 transformers
 timm
 requests
-python-dotenv
 qwen_vl_utils
 google.generativeai
 vllm

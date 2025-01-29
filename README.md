@@ -1,18 +1,20 @@
 # Markdrop  
 <a href="https://pepy.tech/projects/markdrop"><img src="https://static.pepy.tech/badge/markdrop" alt="markdrop total downloads"></a>
 
-A Python package for converting PDFs (or PDF URLs) to markdown while extracting images and tables. Markdrop makes it easy to convert PDF documents into markdown format while preserving images and tables.  
+A Python package for converting PDFs (or PDF URLs) to markdown while extracting images and tables, with advanced features for AI-powered content analysis and descriptions.
 
 ## Features  
 
 - [x] PDF to Markdown conversion with formatting preservation using Docling
 - [x] Automatic image extraction with quality preservation using XRef Id
-- [x] Table detection using Microsoft's Table Transformer    
-- [x] PDF URL support for above three functionalities
-- [x] Textual descriptive descriptions for any image file or folder  
+- [x] Table detection using Microsoft's Table Transformer
+- [x] PDF URL support for core functionalities
+- [x] AI-powered image and table descriptions using multiple LLM providers
+- [x] Interactive HTML output with downloadable Excel tables
+- [x] Customizable image resolution and UI elements
+- [x] Comprehensive logging system
 - [ ] Optical Character Recognition (OCR) for images with embedded text
-- [ ] Enhanced support for structured output formats (e.g., JSON, YAML)    
-- [ ] Support for multi-language PDFs  
+- [ ] Support for multi-language PDFs
 
 ## Installation  
 
@@ -24,106 +26,166 @@ pip install markdrop
 
 ## Quick Start  
 
+### Basic PDF Processing
+
 ```python
 from markdrop import extract_images, make_markdown, extract_tables_from_pdf
 
 source_pdf = 'url/or/path/to/pdf/file'    # Replace with your local PDF file path or a URL
-output_dir = 'data/output'                # Replace it with desired output directory's path
+output_dir = 'data/output'                 # Replace with desired output directory's path
 
 make_markdown(source_pdf, output_dir)
 extract_images(source_pdf, output_dir)
 extract_tables_from_pdf(source_pdf, output_dir=output_dir)
-
 ```
+
+### Advanced PDF Processing with MarkDrop
 
 ```python
-from markdrop import setup_keys
+from markdrop import markdrop, MarkDropConfig, add_downloadable_tables
+from pathlib import Path
+import logging
 
-### API Key Setup
-### If using 'openai' or 'gemini' as llm_client in the generate_descriptions function, you need to set up the API keys first.
+# Configure processing options
+config = MarkDropConfig(
+    image_resolution_scale=2.0,        # Scale factor for image resolution
+    download_button_color='#444444',   # Color for download buttons in HTML
+    log_level=logging.INFO,           # Logging detail level
+    log_dir='logs',                   # Directory for log files
+    excel_dir='markdropped-excel-tables'  # Directory for Excel table exports
+)
 
-setup_keys(key = 'google')
+# Process PDF document
+input_doc_path = "path/to/input.pdf"
+output_dir = Path('output_directory')
 
-# Though this function will be called in genrate_descriptions if no keys are found.
+# Convert PDF and generate HTML with images and tables
+html_path = markdrop(input_doc_path, output_dir, config)
+
+# Add interactive table download functionality
+downloadable_html = add_downloadable_tables(html_path, config)
 ```
+
+### AI-Powered Content Analysis
+
+```python
+from markdrop import setup_keys, process_markdown, ProcessorConfig, AIProvider
+from pathlib import Path
+
+# Set up API keys for AI providers
+setup_keys(key='gemini')  # or setup_keys(key='openai')
+
+# Configure AI processing options
+config = ProcessorConfig(
+    input_path="path/to/markdown/file.md",    # Input markdown file path
+    output_dir=Path("output_directory"),      # Output directory
+    ai_provider=AIProvider.GEMINI,            # AI provider (GEMINI or OPENAI)
+    remove_images=False,                      # Keep or remove original images
+    remove_tables=False,                      # Keep or remove original tables
+    table_descriptions=True,                  # Generate table descriptions
+    image_descriptions=True,                  # Generate image descriptions
+    max_retries=3,                           # Number of API call retries
+    retry_delay=2,                           # Delay between retries in seconds
+    gemini_model_name="gemini-1.5-flash",    # Gemini model for images
+    gemini_text_model_name="gemini-pro",     # Gemini model for text
+    image_prompt=DEFAULT_IMAGE_PROMPT,        # Custom prompt for image analysis
+    table_prompt=DEFAULT_TABLE_PROMPT         # Custom prompt for table analysis
+)
+
+# Process markdown with AI descriptions
+output_path = process_markdown(config)
+```
+
+### Image Description Generation
 
 ```python
 from markdrop import generate_descriptions
 
-### Image Descriptions Generation
+prompt = "Give textual highly detailed descriptions from this image ONLY, nothing else."
+input_path = 'path/to/img_file/or/dir'
+output_dir = 'data/output'
+llm_clients = ['gemini', 'llama-vision']  # Available: ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
 
-prompt = "Give textual highly detailed descriptions from this image ONLY, nothing else." # Replace it with your desired prompt
-input_path = 'path/to/img_file/or/dir'         # Replace it with the path to the images dir or image file
-output_dir = 'data/output'                     # Replace it with the desired output directory's path
-llm_clients = ['gemini','llama-vision']        # Replace it with the desired models from ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral'] only
-
-generate_descriptions(input_path = input_path, output_dir = output_dir, prompt = prompt, llm_client = llm_clients)
-```
-```python
-from markdrop import analyze_pdf_images
-
-pdf_path = 'path/to/pdf/file'             # Replace with your local PDF file pathL
-output_dir = "data/output/image_xref"     # Replace it with desired output directory's path
-
-analyze_pdf_images(pdf_path, output_dir, verbose=True, save_images=True)
+generate_descriptions(
+    input_path=input_path,
+    output_dir=output_dir,
+    prompt=prompt,
+    llm_client=llm_clients
+)
 ```
 
 ## API Reference  
 
-### make_markdown(source, output_dir, verbose=False)  
-Converts a PDF or its URL to markdown format.  
+### Core Functions
 
-Parameters:  
-- `source` (str): Path to input PDF or URL  
-- `output_dir` (str): Output directory path  
-- `verbose` (bool): Enable detailed logging  
-
-### extract_images(source, output_dir, verbose=False)  
-Extracts images from PDF or its URL while maintaining quality.  
-
-Parameters:  
-- `source` (str): Path to input PDF or URL  
-- `output_dir` (str): Output directory path  
-- `verbose` (bool): Enable detailed logging  
-
-### extract_tables_from_pdf(pdf_path, **kwargs)  
-Detects and extracts tables images.  
-
-Parameters:  
-- `pdf_path` (str): Path to input PDF or URL  
-- `start_page` (int, optional): Starting page number  
-- `end_page` (int, optional): Ending page number  
-- `threshold` (float, optional): Detection confidence threshold  
-- `output_dir` (str): Output directory path  
-
-### setup_keys(key)
-Generates the description of image(s) based on given prompt and llm_client in a csv
-> `llm clients` supported are ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
+#### markdrop(input_doc_path: str, output_dir: str, config: Optional[MarkDropConfig] = None) -> Path
+Converts PDF to markdown and HTML with enhanced features.
 
 Parameters:
-- `key` (str): `key = 'google'` if using `'gemini'` as llm_client in generate_descriptions
-- `key` (str): `key = 'openai'` if using `'openai'` as llm_client in generate_descriptions
+- `input_doc_path` (str): Path to input PDF file
+- `output_dir` (str): Output directory path
+- `config` (MarkDropConfig, optional): Configuration options for processing
 
-### generate_descriptions(input_path, output_dir, prompt, llm_client)
-Generates the description of image(s) based on given prompt and llm_client in a csv
-> `llm clients` supported are ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
+#### add_downloadable_tables(html_path: Path, config: Optional[MarkDropConfig] = None) -> Path
+Adds interactive table download functionality to HTML output.
 
 Parameters:
-- `input_path` (str): Path to input PDF or URL  
-- `output_dir` (str): Output directory path  
-- `prompt` (str): prompt to be sent to model along with image
-- `llm_client` (list): list containing minimum one model from llm clients
+- `html_path` (Path): Path to HTML file
+- `config` (MarkDropConfig, optional): Configuration options
 
+### Configuration Classes
 
-### analyze_pdf_images(source: str, output_dir: str, verbose = False, save_images = False):
-Analyze different types of image references in a PDF and save results
-    
-Parameters:  
-- `source` (str): Local PDF path or URL to PDF
-- `output_dir` (str): Directory for saving analysis results and extracted images
-- `verbose` (bool): Print detailed information
-- `save_images` (bool): If True, saves extracted images to output_dir
+#### MarkDropConfig
+Configuration for PDF processing:
+- `image_resolution_scale` (float): Scale factor for image resolution (default: 2.0)
+- `download_button_color` (str): HTML color code for download buttons (default: '#444444')
+- `log_level` (int): Logging level (default: logging.INFO)
+- `log_dir` (str): Directory for log files (default: 'logs')
+- `excel_dir` (str): Directory for Excel table exports (default: 'markdropped-excel-tables')
 
+#### ProcessorConfig
+Configuration for AI processing:
+- `input_path` (str): Path to markdown file
+- `output_dir` (str): Output directory path
+- `ai_provider` (AIProvider): AI provider selection (GEMINI or OPENAI)
+- `remove_images` (bool): Whether to remove original images
+- `remove_tables` (bool): Whether to remove original tables
+- `table_descriptions` (bool): Generate table descriptions
+- `image_descriptions` (bool): Generate image descriptions
+- `max_retries` (int): Maximum API call retries
+- `retry_delay` (int): Delay between retries in seconds
+- `gemini_model_name` (str): Gemini model for image processing
+- `gemini_text_model_name` (str): Gemini model for text processing
+- `image_prompt` (str): Custom prompt for image analysis
+- `table_prompt` (str): Custom prompt for table analysis
+
+### Legacy Functions
+
+#### make_markdown(source: str, output_dir: str, verbose: bool = False)
+Legacy function for basic PDF to markdown conversion.
+
+Parameters:
+- `source` (str): Path to input PDF or URL
+- `output_dir` (str): Output directory path
+- `verbose` (bool): Enable detailed logging
+
+#### extract_images(source: str, output_dir: str, verbose: bool = False)
+Legacy function for basic image extraction.
+
+Parameters:
+- `source` (str): Path to input PDF or URL
+- `output_dir` (str): Output directory path
+- `verbose` (bool): Enable detailed logging
+
+#### extract_tables_from_pdf(pdf_path: str, **kwargs)
+Legacy function for basic table extraction.
+
+Parameters:
+- `pdf_path` (str): Path to input PDF or URL
+- `start_page` (int, optional): Starting page number
+- `end_page` (int, optional): Ending page number
+- `threshold` (float, optional): Detection confidence threshold
+- `output_dir` (str): Output directory path
 
 ## Contributing  
 
@@ -159,11 +221,17 @@ markdrop/
 ├── requirements.txt  
 ├── setup.py  
 └── markdrop/ 
-    ├── __init__.py  
-    ├── main.py  
+    ├── __init__.py 
+    ├── src
+    |    └── markdrop-logo.png
+    ├── main.py
+    ├── process.py
+    ├── api_setup.py
+    ├── parse.py
     ├── utils.py  
     ├── helper.py
     ├── ignore_warnings.py
+    ├── run.py
     └── models/
         ├── __init__.py
         ├── .env
@@ -188,4 +256,4 @@ Please note that this project follows our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Support  
 
-- [Open an issue](https://github.com/shoryasethia/markdrop/issues)  
+- [Open an issue](https://github.com/shoryasethia/markdrop/issues)
