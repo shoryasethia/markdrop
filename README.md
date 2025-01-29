@@ -5,7 +5,7 @@
 
 <a href="https://pepy.tech/projects/markdrop"><img src="https://static.pepy.tech/badge/markdrop" alt="markdrop total downloads"></a>
 
-A Python package for converting PDFs (or PDF URLs) to markdown while extracting images and tables, with advanced features for AI-powered content analysis and descriptions.
+A Python package for converting PDFs to markdown while extracting images and tables, generate descriptive text descriptions for extracted tables/images using several LLM clients. And many more functionalities. Markdrop is available on PyPI.
 
 ## Features  
 
