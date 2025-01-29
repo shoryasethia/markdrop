@@ -26,9 +26,11 @@ A Python package for converting PDFs (or PDF URLs) to markdown while extracting 
 pip install markdrop  
 ```  
 
-> https://pypi.org/project/markdrop  
+#### Python Package Index (PyPI) Page: https://pypi.org/project/markdrop
 
 ## Quick Start  
+
+[![Open in Colab](https://colab.research.google.com/img/colab_favicon.ico)](https://colab.research.google.com/drive/1ZebtmqGB9i4pZzo824aT5KzGuPikw6D9?usp=sharing)
 
 ### Basic PDF Processing
 
