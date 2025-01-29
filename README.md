@@ -1,4 +1,8 @@
-# Markdrop  
+<p align="left">
+  <img src="https://github.com/shoryasethia/markdrop/blob/main/markdrop/src/markdrop-logo.png" alt="Markdrop Logo" width="200" height="200"/>
+  <h1 style="display: inline; font-size: 2em; vertical-align: middle; padding-left: 10px; margin: 0;">Markdrop</h1>
+</p>
+
 <a href="https://pepy.tech/projects/markdrop"><img src="https://static.pepy.tech/badge/markdrop" alt="markdrop total downloads"></a>
 
 A Python package for converting PDFs (or PDF URLs) to markdown while extracting images and tables, with advanced features for AI-powered content analysis and descriptions.
