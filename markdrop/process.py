@@ -124,7 +124,7 @@ def markdrop(input_doc_path: str, output_dir: str, config: Optional[MarkDropConf
         custom_head = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="{config.favicon_link}"/>
+    <link rel="icon" href="path/to/markdrop-logo.png" type="image/png">
     <meta charset="UTF-8">
     <title>MarkDrop</title>
 '''
