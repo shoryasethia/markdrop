@@ -11,7 +11,6 @@ python-dotenv
 
 
 
-fitz
 pymupdf
 torch
 tqdm
