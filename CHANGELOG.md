@@ -42,3 +42,7 @@ All notable changes to this project will be documented in this file.
 ## [0.3.1] - 30-01-2025
 ### Added
 -  Fix import issue of `Fitz` package
+
+## [0.3.1.1] - 30-01-2025
+### Added
+-  Fix MarkDropConfig
