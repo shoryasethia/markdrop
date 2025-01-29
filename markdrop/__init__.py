@@ -1,5 +1,5 @@
 from pathlib import Path
-from .api_setup import setup_keys
+from .api_setup import setup_apikeys
 from .process import markdrop, MarkDropConfig, add_downloadable_tables, logging
 from .parse import process_markdown, ProcessorConfig, AIProvider, logger
 
@@ -15,7 +15,11 @@ import transformers #type: ignore
 # Import and execute warning suppressions
 from .ignore_warnings import *
 
+<<<<<<< HEAD
 __version__ = "0.3.1.1"
+=======
+__version__ = "0.3.1.2"
+>>>>>>> f8ef7c2 (bugfixes)
 __all__ = [
     # Main processing functions
     'markdrop',
@@ -33,6 +37,7 @@ __all__ = [
     'generate_descriptions',
     'setup_keys',
     'analyze_pdf_images',
+    'setup_apikeys',
     
     # Enums and constants
     'AIProvider',

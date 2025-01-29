@@ -17,6 +17,10 @@ import openpyxl
 from dataclasses import dataclass
 from typing import Optional
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f8ef7c2 (bugfixes)
 input_doc_path = "path/to/input.pdf"
 output_dir = Path('output_dir')
 

@@ -1,4 +1,4 @@
-def setup_keys(key):
+def setup_apikeys(key):
     """Interactive function to setup API keys and save them in markdrop/.env"""
     import os
     from pathlib import Path

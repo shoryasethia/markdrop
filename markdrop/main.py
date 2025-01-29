@@ -1,5 +1,5 @@
 from pathlib import Path
-from .api_setup import setup_keys
+from .api_setup import setup_apikeys
 from .process import markdrop, MarkDropConfig, add_downloadable_tables, logging
 from .parse import process_markdown, ProcessorConfig, AIProvider, logger
 
@@ -22,7 +22,7 @@ downloadable_html = add_downloadable_tables(html_path, config)
 
 #-----------------------------------------------------------------------------#
 
-setup_keys(key = 'gemini')      # setup_keys(key = 'openai')
+setup_apikeys(key = 'gemini')      # setup_keys(key = 'openai')
 
 # Construct the markdown path based on input_doc_path
 input_doc_stem = Path(input_doc_path).stem
