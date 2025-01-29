@@ -26,7 +26,7 @@ setup_apikeys(key = 'gemini')      # setup_keys(key = 'openai')
 
 # Construct the markdown path based on input_doc_path
 input_doc_stem = Path(input_doc_path).stem
-markdown_path = output_dir / f"{input_doc_stem}-markdropped.md"
+markdown_path = output_dir / f"{input_doc_stem}-markdroped.md"
 
 ########### <Default prompts> ###########
 DEFAULT_IMAGE_PROMPT = """
