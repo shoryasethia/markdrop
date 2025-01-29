@@ -38,3 +38,7 @@ All notable changes to this project will be documented in this file.
 -  End-to-End pdf to html
 -  Generate descriptions of images and tables on the fly in a single traversal
 -  Added `Download table(s) as Excel` functionality
+
+## [0.3.1] - 30-01-2025
+### Added
+-  Fix import issue of `Fitz` package
