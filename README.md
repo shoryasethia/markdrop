@@ -17,8 +17,8 @@ A Python package for converting PDFs to markdown while extracting images and tab
 - [x] Interactive HTML output with downloadable Excel tables
 - [x] Customizable image resolution and UI elements
 - [x] Comprehensive logging system
-- [ ] Optical Character Recognition (OCR) for images with embedded text
-- [ ] Support for multi-language PDFs
+- [ ] Support for other files
+- [ ] Streamlit/web interface
 
 ## Installation  
 
