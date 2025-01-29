@@ -17,7 +17,6 @@ import openpyxl
 from dataclasses import dataclass
 from typing import Optional
 
-favicon_link: str = 'src/markdrop-logo.png'
 input_doc_path = "path/to/input.pdf"
 output_dir = Path('output_dir')
 
@@ -27,6 +26,7 @@ class MarkDropConfig:
     """Configuration class for MarkDrop"""
     image_resolution_scale: float = 2.0
     download_button_color: str = '#444444'
+    favicon_link: str = 'src/markdrop-logo.png'
     log_level: int = logging.INFO
     log_dir: str = 'logs'
     excel_dir: str = 'markdropped-excel-tables'
