@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="markdrop",
-    version="0.3.0",
+    version="0.3.1",
     packages=find_packages(),
     install_requires=[
         "beautifulsoup4",
@@ -14,7 +14,6 @@ setup(
         "Pillow",
         "protobuf",
         "python-dotenv",
-        "fitz",
         "pymupdf",
         "torch",
         "tqdm",
