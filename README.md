@@ -75,11 +75,11 @@ downloadable_html = add_downloadable_tables(html_path, config)
 ### AI-Powered Content Analysis
 
 ```python
-from markdrop import setup_keys, process_markdown, ProcessorConfig, AIProvider
+from markdrop import setup_keys, process_markdown, ProcessorConfig, AIProvider, logger
 from pathlib import Path
 
 # Set up API keys for AI providers
-setup_keys(key='gemini')  # or setup_keys(key='openai')
+setup_apikeys(key='gemini')  # or setup_keys(key='openai')
 
 # Configure AI processing options
 config = ProcessorConfig(
