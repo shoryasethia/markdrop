@@ -52,4 +52,4 @@ All notable changes to this project will be documented in this file.
 ## [0.3.1.2] - 30-01-2025
 ### Added
 -  Removed conflicts in apikeys setup
->>>>>>> f8ef7c2 (bugfixes)
+
