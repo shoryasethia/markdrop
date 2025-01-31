@@ -3,7 +3,11 @@
   <h1 style="display: inline; font-size: 2em; vertical-align: middle; padding-left: 10px; margin: 0;">Markdrop</h1>
 </p>
 
-<a href="https://pepy.tech/projects/markdrop"><img src="https://static.pepy.tech/badge/markdrop" alt="markdrop total downloads"></a>
+[![Downloads](https://static.pepy.tech/badge/markdrop)](https://pepy.tech/projects/markdrop)
+[![PyPI Version](https://img.shields.io/pypi/v/markdrop)](https://pypi.org/project/markdrop/)
+[![License](https://img.shields.io/github/license/shoryasethia/markdrop)](https://github.com/shoryasethia/markdrop/blob/main/LICENSE)
+[![Stars](https://img.shields.io/github/stars/shoryasethia/markdrop?style=social)](https://github.com/shoryasethia/markdrop/stargazers)
+[![Issues](https://img.shields.io/github/issues/shoryasethia/markdrop)](https://github.com/shoryasethia/markdrop/issues)
 
 A Python package for converting PDFs to markdown while extracting images and tables, generate descriptive text descriptions for extracted tables/images using several LLM clients. And many more functionalities. Markdrop is available on PyPI.
 
