@@ -253,7 +253,7 @@ markdrop/
 ```  
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=shoryasethia/markdrop&type=Timeline)](https://star-history.com/#shoryasethia/markdrop&Timeline))
+[![Star History Chart](https://api.star-history.com/svg?repos=shoryasethia/markdrop&type=Timeline)](https://star-history.com/#shoryasethia/markdrop&Timeline)
 
 ## License  
 
