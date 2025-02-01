@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/github/license/shoryasethia/markdrop)](https://github.com/shoryasethia/markdrop/blob/main/LICENSE)
 [![Stars](https://img.shields.io/github/stars/shoryasethia/markdrop?style=social)](https://github.com/shoryasethia/markdrop/stargazers)
 [![Issues](https://img.shields.io/github/issues/shoryasethia/markdrop)](https://github.com/shoryasethia/markdrop/issues)
+[![Forks](https://img.shields.io/github/forks/shoryasethia/markdrop?style=social)](https://github.com/shoryasethia/markdrop/network/members)
 
 A Python package for converting PDFs to markdown while extracting images and tables, generate descriptive text descriptions for extracted tables/images using several LLM clients. And many more functionalities. Markdrop is available on PyPI.
 
