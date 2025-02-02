@@ -35,7 +35,7 @@ pip install markdrop
 
 ## Quick Start  
 
-[![Open in Colab](https://colab.research.google.com/img/colab_favicon.ico)](https://colab.research.google.com/drive/1ZebtmqGB9i4pZzo824aT5KzGuPikw6D9?usp=sharing)
+[![Open in Colab](https://colab.research.google.com/drive/1oApTrP_kjNn0s1tpE0SIWRyGzYfflQsi?usp=sharing)
 
 ### Basic PDF Processing
 
