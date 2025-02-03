@@ -199,6 +199,9 @@ Parameters:
 - `threshold` (float, optional): Detection confidence threshold
 - `output_dir` (str): Output directory path
 
+### Quick Start for Legacy Functions
+Check an example in [`run.py`](https://github.com/shoryasethia/markdrop/blob/main/markdrop/run.py)
+
 ## Contributing  
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.  
