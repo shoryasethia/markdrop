@@ -30,7 +30,7 @@ class MarkDropConfig:
     favicon_link: str = 'src/markdrop-logo.png'
     log_level: int = logging.INFO
     log_dir: str = 'logs'
-    excel_dir: str = 'markdropped-excel-tables'
+    excel_dir: str = 'markdrop_excel_tables'
 
 def setup_logging(config: MarkDropConfig) -> None:
     """Set up logging configuration"""
@@ -124,7 +124,7 @@ def markdrop(input_doc_path: str, output_dir: str, config: Optional[MarkDropConf
         custom_head = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="path/to/markdrop-logo.png" type="image/png">
+    <link rel="icon" href="src/markdrop-logo.png" type="image/png">
     <meta charset="UTF-8">
     <title>MarkDrop</title>
 '''
@@ -210,7 +210,7 @@ def add_downloadable_tables(html_path: Path, config: Optional[MarkDropConfig] = 
         
         async function downloadAllTablesAsZip() {
             const zip = new JSZip();
-            const excelFolder = zip.folder("excel_tables");
+            const excelFolder = zip.folder("markdrop_excel_tables");
             
             const tables = document.querySelectorAll('.table-data');
             for (let i = 0; i < tables.length; i++) {
@@ -222,7 +222,7 @@ def add_downloadable_tables(html_path: Path, config: Optional[MarkDropConfig] = 
             const zipBlob = await zip.generateAsync({type: "blob"});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(zipBlob);
-            link.download = "excel_tables.zip";
+            link.download = "markdrop_excel_tables.zip";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
