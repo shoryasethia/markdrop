@@ -2,11 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name="markdrop",
-<<<<<<< HEAD
-    version="0.3.1.1",
-=======
-    version="0.3.1.2",
->>>>>>> f8ef7c2 (bugfixes)
+    
+    version="0.3.2.0",
+
     packages=find_packages(),
     install_requires=[
         "beautifulsoup4",
