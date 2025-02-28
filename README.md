@@ -9,6 +9,7 @@
 [![Stars](https://img.shields.io/github/stars/shoryasethia/markdrop?style=social)](https://github.com/shoryasethia/markdrop/stargazers)
 [![Issues](https://img.shields.io/github/issues/shoryasethia/markdrop)](https://github.com/shoryasethia/markdrop/issues)
 [![Forks](https://img.shields.io/github/forks/shoryasethia/markdrop?style=social)](https://github.com/shoryasethia/markdrop/network/members)
+<a href="https://www.producthunt.com/posts/markdrop?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-markdrop" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=919009&theme=dark&t=1740746408634" alt="Markdrop - PDF&#0032;to&#0032;markdown&#0032;&#0124;&#0032;Tables&#0032;to&#0032;Excel&#0032;&#0124;&#0032;Table&#0047;Images&#0032;Description | Product Hunt" style="width: 105px; height: px;"  /></a>
 
 A Python package for converting PDFs to markdown while extracting images and tables, generate descriptive text descriptions for extracted tables/images using several LLM clients. And many more functionalities. Markdrop is available on PyPI.
 
