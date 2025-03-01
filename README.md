@@ -1,6 +1,6 @@
 <p align="left">
   <img src="https://github.com/shoryasethia/markdrop/blob/main/markdrop/src/markdrop-logo.png" alt="Markdrop Logo" width="200" height="200"/>
-  <h1 style="display: inline; font-size: 2em; vertical-align: middle; padding-left: 10px; margin: 0;">Markdrop</h1>
+  <h1 style="display: inline; font-size: 2em; vertical-align: middle; padding-left: 10px; margin: 0;"><a href = "https://github.com/shoryasethia/markdrop">Markdrop</a></h1>
 </p>
 
 [![Downloads](https://static.pepy.tech/badge/markdrop)](https://pepy.tech/projects/markdrop)
