@@ -13,6 +13,11 @@
 
 A Python package for converting PDFs to markdown while extracting images and tables, generate descriptive text descriptions for extracted tables/images using several LLM clients. And many more functionalities. Markdrop is available on PyPI.
 
+## Quick Start  
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oApTrP_kjNn0s1tpE0SIWRyGzYfflQsi?usp=sharing)
+[![Watch the demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube&logoColor=white)](https://youtu.be/2xg7W0-oiw0)
+
 ## Features  
 
 - [x] PDF to Markdown conversion with formatting preservation using Docling
@@ -33,11 +38,6 @@ pip install markdrop
 ```  
 
 #### Python Package Index (PyPI) Page: https://pypi.org/project/markdrop
-
-## Quick Start  
-
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1oApTrP_kjNn0s1tpE0SIWRyGzYfflQsi?usp=sharing)
-[![Watch the demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube&logoColor=white)](https://youtu.be/2xg7W0-oiw0)
 
 ### Basic PDF Processing
 
