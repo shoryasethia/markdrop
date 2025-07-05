@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="markdrop",
-    version="3.4.0",
+    version="3.5.0",
     packages=find_packages(),
     install_requires=[
         "beautifulsoup4",

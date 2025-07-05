@@ -9,6 +9,8 @@ logs/
 __pycache__/
 *.pyc
 
+tests/
+
 # Temporary files
 temp.xlsx
 markdrop.ipynb
