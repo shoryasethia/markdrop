@@ -1,0 +1,14 @@
+beautifulsoup4
+docling
+docling_core==2.16.0
+openai
+openpyxl
+pandas
+Pillow
+protobuf
+python-dotenv
+pymupdf
+requests
+google-generativeai
+numpy<2.0
+tqdm

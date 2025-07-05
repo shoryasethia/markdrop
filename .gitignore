@@ -1,0 +1,23 @@
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Temporary files
+temp.xlsx
+markdrop.ipynb
+markdrop.egg-info/
+test.pdf
+Dockerfile
+
+# Output directory
+output_dir/
+
+# Test-related temporary files
+tests/__pycache__/
