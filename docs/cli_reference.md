@@ -10,7 +10,7 @@ The Markdrop Command Line Interface (CLI) is the primary way to interact with th
 markdrop --version
 ```
 
-Prints the installed package version (for example `markdrop 4.1.0`).
+Prints the installed package version (for example `markdrop 4.1.2`).
 
 ---
 

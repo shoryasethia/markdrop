@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "markdrop"
-version = "4.1.1"
+version = "4.1.2"
 description = "A comprehensive PDF processing toolkit that converts PDFs to markdown with advanced AI-powered features for image and table analysis. Supports local files and URLs, preserves document structure, extracts high-quality images, detects tables using advanced ML models, and generates detailed content descriptions using multiple LLM providers including OpenAI GPT-4o, Google Gemini, Anthropic Claude, Groq, OpenRouter, and LiteLLM."
 readme = "README.md"
 license = { text = "GPL-3.0" }
