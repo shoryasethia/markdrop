@@ -77,29 +77,10 @@ all = [
     "litellm>=1.0.0",
     "ollama",
 ]
-dev = [
-    "pytest",
-    "pytest-asyncio",
-    "ruff",
-    "mypy",
-]
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["markdrop*"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["."]
-asyncio_mode = "auto"
-
-[tool.mypy]
-python_version = "3.10"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-ignore_missing_imports = true
-packages = ["markdrop"]
 
 [tool.ruff]
 line-length = 100

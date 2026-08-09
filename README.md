@@ -316,9 +316,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md). Please read ou
 git clone https://github.com/shoryasethia/markdrop.git
 cd markdrop
 python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -e ".[dev]"
-ruff check .
-pytest
+pip install -e .
 ```
 
 ---

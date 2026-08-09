@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.2] - Unreleased
+
+### Removed
+- GitHub Actions CI workflow and in-repo test suite.
+
 ## [4.1.1] - 2026-08-09
 
 ### Changed
