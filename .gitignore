@@ -8,6 +8,15 @@ logs/
 # Python bytecode
 __pycache__/
 *.pyc
+*.pyo
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Type checker cache
+.mypy_cache/
 
 # Pytest & Ruff
 .pytest_cache/
@@ -17,7 +26,6 @@ pytest_out*.txt
 # Temporary files
 temp.xlsx
 markdrop.ipynb
-markdrop.egg-info/
 test.pdf
 Dockerfile
 

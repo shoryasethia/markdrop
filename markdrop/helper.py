@@ -143,7 +143,7 @@ def analyze_pdf_images(
 ):
 
     try:
-        result = analyze_pdf_images_main(
+        return analyze_pdf_images_main(
             source=source,
             output_dir=output_dir,
             verbose=verbose,
@@ -151,3 +151,4 @@ def analyze_pdf_images(
         )
     except Exception as e:
         print(f"Error running analysis: {e}")
+        raise

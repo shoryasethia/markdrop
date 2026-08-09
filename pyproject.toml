@@ -1,3 +1,106 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "markdrop"
+version = "4.1.1"
+description = "A comprehensive PDF processing toolkit that converts PDFs to markdown with advanced AI-powered features for image and table analysis. Supports local files and URLs, preserves document structure, extracts high-quality images, detects tables using advanced ML models, and generates detailed content descriptions using multiple LLM providers including OpenAI GPT-4o, Google Gemini, Anthropic Claude, Groq, OpenRouter, and LiteLLM."
+readme = "README.md"
+license = { text = "GPL-3.0" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Shorya Sethia", email = "shoryasethia4may@gmail.com" },
+]
+keywords = [
+    "pdf",
+    "markdown",
+    "converter",
+    "ai",
+    "llm",
+    "table-extraction",
+    "image-analysis",
+    "document-processing",
+    "gemini",
+    "openai",
+    "anthropic",
+    "claude",
+    "groq",
+    "openrouter",
+    "litellm",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Markup :: Markdown",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "beautifulsoup4",
+    "docling",
+    "docling_core==2.16.0",
+    "openai>=1.0.0",
+    "openpyxl",
+    "packaging",
+    "pandas",
+    "Pillow",
+    "protobuf",
+    "python-dotenv",
+    "pymupdf",
+    "requests",
+    "tqdm",
+    "google-genai",
+    "numpy>=1.26.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/shoryasethia/markdrop"
+
+[project.scripts]
+markdrop = "markdrop.main:main"
+
+[project.optional-dependencies]
+lite = ["pymupdf4llm"]
+anthropic = ["anthropic>=0.40.0"]
+groq = ["groq>=0.14.0"]
+litellm = ["litellm>=1.0.0"]
+local-models = ["ollama"]
+all = [
+    "pymupdf4llm",
+    "anthropic>=0.40.0",
+    "groq>=0.14.0",
+    "litellm>=1.0.0",
+    "ollama",
+]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+    "mypy",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["markdrop*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+packages = ["markdrop"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py310"
@@ -8,20 +111,22 @@ exclude = [
     "dist",
     "venv",
     ".venv",
+    "markdrop/run.py",
+    "markdrop_test.ipynb",
 ]
 
 [tool.ruff.lint]
 select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "C4",  # flake8-comprehensions
-    "B",   # flake8-bugbear
-    "UP",  # pyupgrade
+    "E",
+    "W",
+    "F",
+    "I",
+    "C4",
+    "B",
+    "UP",
 ]
 ignore = [
-    "E501", # line too long (handled by formatter)
+    "E501",
 ]
 
 [tool.ruff.format]

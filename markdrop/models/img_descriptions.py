@@ -9,7 +9,7 @@ from .responder import generate_response
 
 def validate_image(image_path):
     try:
-        with Image.open(image_path) as img:
+        with Image.open(image_path):
             return True
     except Exception:
         return False
@@ -47,7 +47,9 @@ def generate_descriptions(input_path, output_dir, prompt, llm_client=None):
         for model in llm_client:
             try:
                 # Convert path to string for model processing
-                response = asyncio.run(generate_response([str(img_path)], prompt, model_choice=model))
+                response = asyncio.run(
+                    generate_response([str(img_path)], prompt, model_choice=model)
+                )
                 results.append({"image_path": str(img_path), "model": model, "response": response})
                 print(f"Processed {img_path} with {model}")
             except Exception as e:

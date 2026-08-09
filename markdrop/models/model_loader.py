@@ -2,6 +2,7 @@ import os
 
 import torch
 
+from ..config_paths import get_gemini_api_key
 from ..setup_keys import setup_keys
 from .logger import get_logger
 
@@ -73,9 +74,15 @@ def load_model(model_choice):
         # Load Gemini model
         import google.generativeai as genai
 
-        api_key = os.getenv("GEMINI_API_KEY")
+        api_key = get_gemini_api_key()
         if not api_key:
             setup_keys(provider="gemini")
+            api_key = get_gemini_api_key()
+
+        if not api_key:
+            raise ValueError(
+                "GEMINI_API_KEY (or GOOGLE_API_KEY) not found – run: markdrop setup gemini"
+            )
 
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-3.1-flash-lite")

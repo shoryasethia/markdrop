@@ -44,8 +44,8 @@ pip install markdrop
 ```python
 from markdrop import extract_images, make_markdown, extract_tables_from_pdf
 
-source_pdf = 'url/or/path/to/pdf/file'    # Replace with your local PDF file path or a URL
-output_dir = 'data/output'                 # Replace with desired output directory's path
+source_pdf = "url/or/path/to/pdf/file"  # Replace with your local PDF file path or a URL
+output_dir = "data/output"  # Replace with desired output directory's path
 
 make_markdown(source_pdf, output_dir)
 extract_images(source_pdf, output_dir)
@@ -61,16 +61,16 @@ import logging
 
 # Configure processing options
 config = MarkDropConfig(
-    image_resolution_scale=2.0,        # Scale factor for image resolution
-    download_button_color='#444444',   # Color for download buttons in HTML
-    log_level=logging.INFO,           # Logging detail level
-    log_dir='logs',                   # Directory for log files
-    excel_dir='markdropped-excel-tables'  # Directory for Excel table exports
+    image_resolution_scale=2.0,  # Scale factor for image resolution
+    download_button_color="#444444",  # Color for download buttons in HTML
+    log_level=logging.INFO,  # Logging detail level
+    log_dir="logs",  # Directory for log files
+    excel_dir="markdropped-excel-tables",  # Directory for Excel table exports
 )
 
 # Process PDF document
 input_doc_path = "path/to/input.pdf"
-output_dir = Path('output_directory')
+output_dir = Path("output_directory")
 
 # Convert PDF and generate HTML with images and tables
 html_path = markdrop(input_doc_path, output_dir, config)
@@ -86,23 +86,23 @@ from markdrop import setup_keys, process_markdown, ProcessorConfig, AIProvider, 
 from pathlib import Path
 
 # Set up API keys for AI providers
-setup_apikeys(key='gemini')  # or setup_keys(key='openai')
+setup_apikeys(key="gemini")  # or setup_keys(key='openai')
 
 # Configure AI processing options
 config = ProcessorConfig(
-    input_path="path/to/markdown/file.md",    # Input markdown file path
-    output_dir=Path("output_directory"),      # Output directory
-    ai_provider=AIProvider.GEMINI,            # AI provider (GEMINI or OPENAI)
-    remove_images=False,                      # Keep or remove original images
-    remove_tables=False,                      # Keep or remove original tables
-    table_descriptions=True,                  # Generate table descriptions
-    image_descriptions=True,                  # Generate image descriptions
-    max_retries=3,                           # Number of API call retries
-    retry_delay=2,                           # Delay between retries in seconds
-    gemini_model_name="gemini-1.5-flash",    # Gemini model for images
-    gemini_text_model_name="gemini-pro",     # Gemini model for text
-    image_prompt=DEFAULT_IMAGE_PROMPT,        # Custom prompt for image analysis
-    table_prompt=DEFAULT_TABLE_PROMPT         # Custom prompt for table analysis
+    input_path="path/to/markdown/file.md",  # Input markdown file path
+    output_dir=Path("output_directory"),  # Output directory
+    ai_provider=AIProvider.GEMINI,  # AI provider (GEMINI or OPENAI)
+    remove_images=False,  # Keep or remove original images
+    remove_tables=False,  # Keep or remove original tables
+    table_descriptions=True,  # Generate table descriptions
+    image_descriptions=True,  # Generate image descriptions
+    max_retries=3,  # Number of API call retries
+    retry_delay=2,  # Delay between retries in seconds
+    gemini_model_name="gemini-1.5-flash",  # Gemini model for images
+    gemini_text_model_name="gemini-pro",  # Gemini model for text
+    image_prompt=DEFAULT_IMAGE_PROMPT,  # Custom prompt for image analysis
+    table_prompt=DEFAULT_TABLE_PROMPT,  # Custom prompt for table analysis
 )
 
 # Process markdown with AI descriptions
@@ -115,15 +115,15 @@ output_path = process_markdown(config)
 from markdrop import generate_descriptions
 
 prompt = "Give textual highly detailed descriptions from this image ONLY, nothing else."
-input_path = 'path/to/img_file/or/dir'
-output_dir = 'data/output'
-llm_clients = ['gemini', 'llama-vision']  # Available: ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
+input_path = "path/to/img_file/or/dir"
+output_dir = "data/output"
+llm_clients = [
+    "gemini",
+    "llama-vision",
+]  # Available: ['qwen', 'gemini', 'openai', 'llama-vision', 'molmo', 'pixtral']
 
 generate_descriptions(
-    input_path=input_path,
-    output_dir=output_dir,
-    prompt=prompt,
-    llm_client=llm_clients
+    input_path=input_path, output_dir=output_dir, prompt=prompt, llm_client=llm_clients
 )
 ```
 

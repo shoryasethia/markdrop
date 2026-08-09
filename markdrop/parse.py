@@ -8,7 +8,7 @@ Supported AI providers
 -----------------------
     gemini       – Google Gemini (google-generativeai)
     openai       – OpenAI GPT-4o
-    anthropic    – Anthropic Claude (claude-opus-4-6 / claude-sonnet-4-5)
+    anthropic    – Anthropic Claude (claude-opus-5 / claude-sonnet-5)
     groq         – Groq (llama-4-scout-17b via OpenAI-compatible API)
     openrouter   – OpenRouter (any model via OpenAI-compatible API)
     litellm      – LiteLLM (any 100+ providers via unified interface)
@@ -26,6 +26,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
+
+from .config_paths import get_gemini_api_key, load_markdrop_env
 
 # ---------------------------------------------------------------------------
 # Named logger (handlers are configured in main.py)
@@ -81,6 +83,8 @@ class ProcessorConfig:
     image_descriptions: bool = True
     max_retries: int = 3
     retry_delay: int = 2
+    max_concurrency: int = 8
+    timeout_seconds: int = 120
 
     # ----------------------------------------------------------------
     # Generic override: set either of these to force a specific model
@@ -97,32 +101,30 @@ class ProcessorConfig:
     gemini_text_model_name: str = "gemini-3.1-flash-lite"
 
     # --- OpenAI ---
-    # gpt-5.4: current flagship as of March 2026 (vision + reasoning)
-    # gpt-5-mini: cost-optimised variant
-    openai_model_name: str = "gpt-5.4"
-    openai_text_model_name: str = "gpt-5.4"
+    # gpt-5.6-terra: balanced vision + reasoning (Aug 2026 default)
+    # gpt-5.6-luna: cost-efficient text/tables; gpt-5.6-sol for max quality
+    openai_model_name: str = "gpt-5.6-terra"
+    openai_text_model_name: str = "gpt-5.6-luna"
 
     # --- Anthropic ---
-    # claude-opus-4-6: Feb 2026 flagship (complex reasoning, agentic)
-    # claude-sonnet-4-6: Feb 17 2026, default on claude.ai (speed + quality)
-    anthropic_model_name: str = "claude-opus-4-6"
-    anthropic_text_model_name: str = "claude-sonnet-4-6"
+    # claude-opus-5: Jul 2026 flagship vision; claude-sonnet-5 for text/tables
+    anthropic_model_name: str = "claude-opus-5"
+    anthropic_text_model_name: str = "claude-sonnet-5"
 
     # --- Groq ---
-    # llama-4-maverick: optimised for multilingual + multimodal (2026)
-    # llama-4-scout: alternative vision model
+    # llama-4-maverick: multimodal vision; scout: faster text/tables
     groq_model_name: str = "meta-llama/llama-4-maverick-17b-128e-instruct"
-    groq_text_model_name: str = "meta-llama/llama-4-maverick-17b-128e-instruct"
+    groq_text_model_name: str = "meta-llama/llama-4-scout-17b-16e-instruct"
 
     # --- OpenRouter (any model on https://openrouter.ai/models) ---
     openrouter_model_name: str = "google/gemini-3.1-flash-lite"
-    openrouter_text_model_name: str = "anthropic/claude-sonnet-4-6"
+    openrouter_text_model_name: str = "anthropic/claude-sonnet-5"
     openrouter_site_url: str = ""
     openrouter_site_name: str = "markdrop"
 
     # --- LiteLLM (provider/model format) ---
-    litellm_model_name: str = "openai/gpt-5.4"
-    litellm_text_model_name: str = "openai/gpt-5.4"
+    litellm_model_name: str = "openai/gpt-5.6-terra"
+    litellm_text_model_name: str = "openai/gpt-5.6-luna"
 
     image_prompt: str = field(default_factory=lambda: DEFAULT_IMAGE_PROMPT)
     table_prompt: str = field(default_factory=lambda: DEFAULT_TABLE_PROMPT)
@@ -178,19 +180,23 @@ class AIProcessor:
 
     def _setup_ai_clients(self):
         """Lazily import and initialise only the required provider client."""
-        from dotenv import load_dotenv
-
-        load_dotenv()
+        load_markdrop_env()
 
         p = self.config.ai_provider
+        timeout = self.config.timeout_seconds
 
         if p == AIProvider.GEMINI:
             from google import genai  # type: ignore
 
-            api_key = os.getenv("GEMINI_API_KEY")
+            api_key = get_gemini_api_key()
             if not api_key:
-                raise ValueError("GEMINI_API_KEY not found – run: markdrop setup gemini")
-            self.gemini_client = genai.Client(api_key=api_key)
+                raise ValueError(
+                    "GEMINI_API_KEY (or GOOGLE_API_KEY) not found – run: markdrop setup gemini"
+                )
+            self.gemini_client = genai.Client(
+                api_key=api_key,
+                http_options={"timeout": timeout * 1000},
+            )
 
         elif p == AIProvider.OPENAI:
             from openai import OpenAI  # type: ignore
@@ -198,7 +204,7 @@ class AIProcessor:
             api_key = os.getenv("OPENAI_API_KEY")
             if not api_key:
                 raise ValueError("OPENAI_API_KEY not found – run: markdrop setup openai")
-            self.client = OpenAI(api_key=api_key)
+            self.client = OpenAI(api_key=api_key, timeout=timeout)
 
         elif p == AIProvider.ANTHROPIC:
             import anthropic  # type: ignore
@@ -206,7 +212,7 @@ class AIProcessor:
             api_key = os.getenv("ANTHROPIC_API_KEY")
             if not api_key:
                 raise ValueError("ANTHROPIC_API_KEY not found – run: markdrop setup anthropic")
-            self.client = anthropic.Anthropic(api_key=api_key)
+            self.client = anthropic.Anthropic(api_key=api_key, timeout=timeout)
 
         elif p == AIProvider.GROQ:
             from openai import OpenAI  # type: ignore
@@ -217,6 +223,7 @@ class AIProcessor:
             self.client = OpenAI(
                 api_key=api_key,
                 base_url="https://api.groq.com/openai/v1",
+                timeout=timeout,
             )
 
         elif p == AIProvider.OPENROUTER:
@@ -234,6 +241,7 @@ class AIProcessor:
                 api_key=api_key,
                 base_url="https://openrouter.ai/api/v1",
                 default_headers=extra_headers,
+                timeout=timeout,
             )
 
         elif p == AIProvider.LITELLM:
@@ -279,8 +287,7 @@ class AIProcessor:
 
                 img = Image.open(image_path)
                 response = self.gemini_client.models.generate_content(
-                    model=self.config.effective_model(),
-                    contents=[self.config.image_prompt, img]
+                    model=self.config.effective_model(), contents=[self.config.image_prompt, img]
                 )
                 return response.text
         elif p == AIProvider.OPENAI:
@@ -395,6 +402,7 @@ class AIProcessor:
                         }
                     ],
                     max_tokens=500,
+                    timeout=self.config.timeout_seconds,
                 )
                 return resp.choices[0].message.content
         else:
@@ -422,8 +430,7 @@ class AIProcessor:
 
             def _call():
                 response = self.gemini_client.models.generate_content(
-                    model=self.config.effective_text_model(),
-                    contents=full_prompt
+                    model=self.config.effective_text_model(), contents=full_prompt
                 )
                 return response.text
         elif p in (AIProvider.OPENAI, AIProvider.GROQ, AIProvider.OPENROUTER):
@@ -448,9 +455,10 @@ class AIProcessor:
 
             def _call():
                 resp = self._litellm.completion(
-                    model=self.config.litellm_text_model_name,
+                    model=self.config.effective_text_model(),
                     messages=[{"role": "user", "content": full_prompt}],
                     max_tokens=500,
+                    timeout=self.config.timeout_seconds,
                 )
                 return resp.choices[0].message.content
         else:
@@ -495,6 +503,7 @@ async def process_markdown(config: ProcessorConfig) -> Path:
     output_dir = Path(config.output_dir)
 
     ai_processor = AIProcessor(config)
+    semaphore = asyncio.Semaphore(config.max_concurrency)
 
     if not input_path.exists():
         raise FileNotFoundError(f"Input file not found: {input_path}")
@@ -515,35 +524,35 @@ async def process_markdown(config: ProcessorConfig) -> Path:
         logger.info(f"Found {len(matches)} images")
 
         async def _replace_image_match(match):
-            alt_text, image_path = match.groups()
-            decoded = urllib.parse.unquote(image_path)
-            try:
-                root = input_path.parent.resolve()
-                full = (root / decoded).resolve()
-                if not str(full).startswith(str(root)):
+            async with semaphore:
+                alt_text, image_path = match.groups()
+                decoded = urllib.parse.unquote(image_path)
+                try:
+                    root = input_path.parent.resolve()
+                    full = (root / decoded).resolve()
+                    full.relative_to(root)
+                except (ValueError, OSError):
                     logger.warning(f"Blocked path traversal attempt: {image_path}")
                     return match.group(0), "[Image skipped: path outside document directory]"
-            except Exception:
-                logger.warning(f"Could not resolve image path: {image_path}")
-                return match.group(0), "[Image skipped: invalid path]"
 
-            if full.exists():
-                desc = await ai_processor.process_image(str(full))
-                if config.remove_images:
-                    return match.group(0), f"\n\n**Image Description:** {desc}\n\n"
-                return match.group(0), f"![{alt_text}]({image_path})\n\n**Image Description:** {desc}\n\n"
-            
-            logger.warning(f"Image not found: {image_path}")
-            return match.group(0), f"[Image not found: {image_path}]"
+                if full.exists():
+                    desc = await ai_processor.process_image(str(full))
+                    if config.remove_images:
+                        return match.group(0), f"\n\n**Image Description:** {desc}\n\n"
+                    return (
+                        match.group(0),
+                        f"![{alt_text}]({image_path})\n\n**Image Description:** {desc}\n\n",
+                    )
 
-        # Gather results concurrently
+                logger.warning(f"Image not found: {image_path}")
+                return match.group(0), f"[Image not found: {image_path}]"
+
         tasks = [_replace_image_match(m) for m in matches]
         results = await asyncio.gather(*tasks)
-        
-        # Replace the original content iteratively with the new content
+
         for original_str, new_str in results:
             content = content.replace(original_str, new_str)
-            
+
         img_count = len(matches)
     else:
         img_count = 0
@@ -555,13 +564,13 @@ async def process_markdown(config: ProcessorConfig) -> Path:
         logger.info(f"Found {len(matches)} tables")
 
         async def _replace_table_match(match):
-            table_content = match.group(1)
-            summary = await ai_processor.process_table(table_content)
-            if config.remove_tables:
-                return match.group(0), f"\n\n**Table Summary:** {summary}\n\n"
-            return match.group(0), f"{table_content}\n\n**Table Summary:** {summary}\n\n"
+            async with semaphore:
+                table_content = match.group(1)
+                summary = await ai_processor.process_table(table_content)
+                if config.remove_tables:
+                    return match.group(0), f"\n\n**Table Summary:** {summary}\n\n"
+                return match.group(0), f"{table_content}\n\n**Table Summary:** {summary}\n\n"
 
-        # Gather table summaries concurrently
         tasks = [_replace_table_match(m) for m in matches]
         results = await asyncio.gather(*tasks)
 

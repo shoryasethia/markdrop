@@ -26,7 +26,9 @@ def get_model_device(model):
         return torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-async def generate_response(images, query, resized_height=280, resized_width=280, model_choice="qwen"):
+async def generate_response(
+    images, query, resized_height=280, resized_width=280, model_choice="qwen"
+):
     """
     Generates a response using the selected model based on the query and images asynchronously.
     """
@@ -80,10 +82,13 @@ async def generate_response(images, query, resized_height=280, resized_width=280
             def _run_qwen():
                 generated_ids = model.generate(**inputs, max_new_tokens=1024)
                 generated_ids_trimmed = [
-                    out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generated_ids)
+                    out_ids[len(in_ids) :]
+                    for in_ids, out_ids in zip(inputs.input_ids, generated_ids, strict=True)
                 ]
                 return processor.batch_decode(
-                    generated_ids_trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=False
+                    generated_ids_trimmed,
+                    skip_special_tokens=True,
+                    clean_up_tokenization_spaces=False,
                 )
 
             output_text = await asyncio.to_thread(_run_qwen)
@@ -94,9 +99,13 @@ async def generate_response(images, query, resized_height=280, resized_width=280
             # Load Gemini model
             from google import genai
 
-            api_key = os.getenv("GEMINI_API_KEY")
+            from ..config_paths import get_gemini_api_key
+
+            api_key = get_gemini_api_key()
             if not api_key:
-                raise ValueError("GEMINI_API_KEY not found – run: markdrop setup gemini")
+                raise ValueError(
+                    "GEMINI_API_KEY (or GOOGLE_API_KEY) not found – run: markdrop setup gemini"
+                )
 
             client = genai.Client(api_key=api_key)
 
@@ -119,8 +128,7 @@ async def generate_response(images, query, resized_height=280, resized_width=280
 
                 def _run_gemini():
                     return client.models.generate_content(
-                        model="gemini-3.1-flash-lite", 
-                        contents=content
+                        model="gemini-3.1-flash-lite", contents=content
                     )
 
                 response = await asyncio.to_thread(_run_gemini)
@@ -159,10 +167,14 @@ async def generate_response(images, query, resized_height=280, resized_width=280
                     )
 
             try:
+
                 def _run_openai():
                     return client.chat.completions.create(
-                        model="gpt-5.4", messages=[{"role": "user", "content": content}], max_tokens=300
+                        model="gpt-5.6-terra",
+                        messages=[{"role": "user", "content": content}],
+                        max_tokens=300,
                     )
+
                 response = await asyncio.to_thread(_run_openai)
                 return response.choices[0].message.content
             except Exception as e:
@@ -194,7 +206,7 @@ async def generate_response(images, query, resized_height=280, resized_width=280
             def _run_llama():
                 output = model.generate(**inputs, max_new_tokens=512)
                 return processor.decode(output[0], skip_special_tokens=True)
-                
+
             response = await asyncio.to_thread(_run_llama)
             return response
 
@@ -229,7 +241,7 @@ async def generate_response(images, query, resized_height=280, resized_width=280
 
                 def _run_pixtral():
                     return model.chat(messages, sampling_params=sampling_params)
-                    
+
                 outputs = await asyncio.to_thread(_run_pixtral)
                 return outputs[0].outputs[0].text
 
@@ -280,10 +292,8 @@ async def generate_response(images, query, resized_height=280, resized_width=280
                         )
 
                     generated_tokens = output[0, inputs["input_ids"].size(1) :]
-                    return processor.tokenizer.decode(
-                        generated_tokens, skip_special_tokens=True
-                    )
-                
+                    return processor.tokenizer.decode(generated_tokens, skip_special_tokens=True)
+
                 generated_text = await asyncio.to_thread(_run_molmo)
 
                 return generated_text

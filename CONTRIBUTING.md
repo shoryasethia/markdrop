@@ -1,33 +1,32 @@
 # Contributing to Markdrop
 
-We love your input! We want to make contributing to Markdrop as easy and transparent as possible.
+## Development setup
 
-## Development Process
+```bash
+git clone https://github.com/shoryasethia/markdrop.git
+cd markdrop
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+pip install -e ".[dev]"
+```
 
-1. Fork the repo and create your branch from `main`
-2. Make your changes
-3. If you've added code, add tests
-4. Ensure the test suite passes
-5. Make sure your code lints
-6. Issue your pull request
+## Quality checks
 
-## Pull Request Process
+```bash
+ruff check .
+ruff format --check .
+pytest
+python -m build
+```
 
-1. Update the README.md with details of changes if needed
-2. Update the CHANGELOG.md with version bump
-3. The PR will be merged once you have approval
+## Pull request checklist
 
-## Any contributions you make will be under the GPL-3.0 License
-When you submit code changes, your submissions are understood to be under the same [GPL-3.0 License](LICENSE) that covers the project.
+1. Add or update tests for behavior changes.
+2. Update `CHANGELOG.md` under an unreleased or versioned heading.
+3. Keep README/docs aligned with CLI output and Python API behavior.
+4. Ensure CI passes locally before opening a PR.
 
-## Report bugs using Github's [issue tracker](https://github.com/shoryasethia/markdrop/issues)
+## License
 
-## Write bug reports with detail, background, and sample code
-
-**Great Bug Reports** tend to have:
-
-- A quick summary and/or background
-- Steps to reproduce
-- What you expected would happen
-- What actually happens
-- Notes (possibly including why you think this might be happening)
+Contributions are made under the GPL-3.0 license.

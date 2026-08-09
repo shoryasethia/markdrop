@@ -5,10 +5,12 @@ import sys
 import time
 from pathlib import Path
 
+from . import __version__
+from .config import MarkDropConfig
 from .helper import analyze_pdf_images
 from .models.img_descriptions import generate_descriptions
 from .parse import AIProvider, ProcessorConfig, process_markdown
-from .process import MarkDropConfig, add_downloadable_tables, markdrop
+from .process import add_downloadable_tables, markdrop
 from .setup_keys import setup_keys
 
 # Human-readable provider list for CLI help text
@@ -25,13 +27,13 @@ def configure_logging(log_level=logging.INFO):
     logger.setLevel(log_level)
 
     fmt = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    
+
     fh = logging.FileHandler(log_file)
     fh.setFormatter(fmt)
-    
+
     sh = logging.StreamHandler(sys.stdout)
     sh.setFormatter(fmt)
-    
+
     logger.addHandler(fh)
     logger.addHandler(sh)
 
@@ -42,6 +44,11 @@ def main():
     parser = argparse.ArgumentParser(
         description="MarkDrop: A comprehensive PDF processing toolkit.",
         formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -56,6 +63,14 @@ def main():
     )
     convert_parser.add_argument(
         "--add_tables", action="store_true", help="Add downloadable tables to the HTML output"
+    )
+    convert_parser.add_argument(
+        "--fast",
+        action="store_true",
+        help=(
+            "PyMuPDF-only conversion (no Docling/Torch). Much faster on CPU; "
+            "skips layout models and table structure detection."
+        ),
     )
 
     # ------------------------------------------------------------------ describe
@@ -76,7 +91,7 @@ def main():
             "AI provider to use for descriptions.\n"
             "  gemini      – Google Gemini 2.0 Flash\n"
             "  openai      – OpenAI GPT-4o\n"
-            "  anthropic   – Anthropic Claude (claude-opus-4-6)\n"
+            "  anthropic   – Anthropic Claude (claude-opus-5)\n"
             "  groq        – Groq Llama-4 Scout (fast inference)\n"
             "  openrouter  – OpenRouter (route to any model)\n"
             "  litellm     – LiteLLM (100+ providers, unified API)"
@@ -96,10 +111,10 @@ def main():
             "Override the vision/primary model for the chosen provider.\n"
             "Examples:\n"
             "  --model gemini-3.1-pro-preview    (for --ai_provider gemini)\n"
-            "  --model gpt-5.4-pro               (for --ai_provider openai)\n"
-            "  --model claude-opus-4-6           (for --ai_provider anthropic)\n"
+            "  --model gpt-5.6-sol               (for --ai_provider openai)\n"
+            "  --model claude-opus-5             (for --ai_provider anthropic)\n"
             "  --model mistral/mistral-large     (for --ai_provider openrouter)\n"
-            "  --model anthropic/claude-opus-4-6 (for --ai_provider litellm)"
+            "  --model anthropic/claude-opus-5 (for --ai_provider litellm)"
         ),
     )
     describe_parser.add_argument(
@@ -154,44 +169,56 @@ def main():
     # ------------------------------------------------------------------ dispatch
     args = parser.parse_args()
 
-    if args.command == "convert":
-        config = MarkDropConfig()
-        output_dir = Path(args.output_dir)
-        html_path = markdrop(args.input_path, str(output_dir), config)
-        if args.add_tables:
-            add_downloadable_tables(html_path, config)
-        print(f"Conversion complete. Output saved in {output_dir}")
+    try:
+        if args.command == "convert":
+            config = MarkDropConfig(fast=args.fast)
+            output_dir = Path(args.output_dir)
+            html_path = markdrop(args.input_path, str(output_dir), config)
+            md_path = html_path.with_suffix(".md")
+            tables_path = None
+            if args.add_tables:
+                tables_path = add_downloadable_tables(html_path, config)
+            print(f"Markdown: {md_path.resolve()}")
+            print(f"HTML: {html_path.resolve()}")
+            if tables_path:
+                print(f"Downloadable tables HTML: {tables_path.resolve()}")
 
-    elif args.command == "describe":
-        config = ProcessorConfig(
-            input_path=str(Path(args.input_path)),
-            output_dir=str(Path(args.output_dir)),
-            ai_provider=AIProvider(args.ai_provider),
-            remove_images=args.remove_images,
-            remove_tables=args.remove_tables,
-            model_name_override=args.model,
-            text_model_name_override=args.text_model,
-        )
-        asyncio.run(process_markdown(config))
-        print(f"Description generation complete. Output saved in {args.output_dir}")
+        elif args.command == "describe":
+            config = ProcessorConfig(
+                input_path=str(Path(args.input_path)),
+                output_dir=str(Path(args.output_dir)),
+                ai_provider=AIProvider(args.ai_provider),
+                remove_images=args.remove_images,
+                remove_tables=args.remove_tables,
+                model_name_override=args.model,
+                text_model_name_override=args.text_model,
+            )
+            processed_path = asyncio.run(process_markdown(config))
+            print(f"Processed markdown: {processed_path.resolve()}")
 
-    elif args.command == "analyze":
-        analyze_pdf_images(
-            args.input_path, args.output_dir, verbose=True, save_images=args.save_images
-        )
-        print(f"Analysis complete. Results saved in {args.output_dir}")
+        elif args.command == "analyze":
+            analyze_pdf_images(
+                args.input_path, args.output_dir, verbose=True, save_images=args.save_images
+            )
+            print(f"Analysis complete. Results saved in {Path(args.output_dir).resolve()}")
 
-    elif args.command == "setup":
-        setup_keys(args.provider)
+        elif args.command == "setup":
+            if not setup_keys(args.provider):
+                sys.exit(1)
 
-    elif args.command == "generate":
-        generate_descriptions(
-            input_path=args.input_path,
-            output_dir=args.output_dir,
-            prompt=args.prompt,
-            llm_client=args.llm_client,
-        )
-        print(f"Image description generation complete. Output saved in {args.output_dir}")
+        elif args.command == "generate":
+            generate_descriptions(
+                input_path=args.input_path,
+                output_dir=args.output_dir,
+                prompt=args.prompt,
+                llm_client=args.llm_client,
+            )
+            print(
+                f"Image description generation complete. Output saved in {Path(args.output_dir).resolve()}"
+            )
+    except Exception as e:
+        logging.getLogger("markdrop").error(f"Command failed: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

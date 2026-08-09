@@ -61,10 +61,10 @@ import logging
 # Configuration block
 config = MarkDropConfig(
     image_resolution_scale=2.0,
-    download_button_color='#444444',
+    download_button_color="#444444",
     log_level=logging.INFO,
-    log_dir='logs',
-    excel_dir='markdrop-excel-tables',
+    log_dir="logs",
+    excel_dir="markdrop-excel-tables",
 )
 
 # 1. Convert PDF to base HTML (and markdown locally). URL supported here too: "https://url.to/pdf"
@@ -84,17 +84,15 @@ config = ProcessorConfig(
     input_path="output_directory/document.md",
     output_dir="output_directory",
     ai_provider=AIProvider.GEMINI,  # Available: GEMINI, OPENAI, ANTHROPIC, GROQ, OPENROUTER, LITELLM
-    
     # Target configurations
     remove_images=False,
     remove_tables=False,
     table_descriptions=True,
     image_descriptions=True,
-    
     # Provider-Specific overrides (Optional)
     # Allows granular decoupling of vision parsing vs table text-parsing
-    model_name_override="gemini-2.0-flash",           # Primary vision analysis model
-    text_model_name_override="gemini-2.0-flash"       # Lean text-only model for generic parsing
+    model_name_override="gemini-2.0-flash",  # Primary vision analysis model
+    text_model_name_override="gemini-2.0-flash",  # Lean text-only model for generic parsing
 )
 
 # Executes AI processing and saves the enriched document
@@ -107,10 +105,10 @@ For standalone image directories or files:
 from markdrop import generate_descriptions
 
 generate_descriptions(
-    input_path='images_folder/',
-    output_dir='descriptions_output/',
-    prompt='Analyze this image and describe all textual and structural elements.',
-    llm_client=['gemini', 'openai'], 
+    input_path="images_folder/",
+    output_dir="descriptions_output/",
+    prompt="Analyze this image and describe all textual and structural elements.",
+    llm_client=["gemini", "openai"],
 )
 ```
 
