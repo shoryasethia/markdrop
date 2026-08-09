@@ -31,6 +31,9 @@ Dockerfile
 
 # Output directory
 output_dir/
+test_output/
+test_output_*/
+test_report.txt
 
 # Test-related temporary files
 tests/__pycache__/
